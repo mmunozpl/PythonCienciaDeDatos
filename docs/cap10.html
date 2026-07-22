@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Capítulo 10. El ciclo de trabajo: limpieza, calidad y transformación – Python para la Ciencia de Datos</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./cap11.html" rel="next">
+<link href="./cap09.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-c51ee271f6426d8ddbbd81f2fce6c0c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cap10.html">Capítulo 10. El ciclo de trabajo: limpieza, calidad y transformación</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Python para la Ciencia de Datos</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inicio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap01.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 1. Entorno de trabajo y flujo reproducible</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 2. El modelo de datos de Python: objetos, tipos y memoria</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 3. Control de flujo, funciones y manejo de errores</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 4. Estructuras de datos integradas y su coste</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 5. Entrada/salida, ficheros y formatos de datos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 6. Programación orientada a objetos y patrones para datos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 7. NumPy: cómputo vectorizado</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 8. pandas: análisis tabular en profundidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 9. polars, Arrow y datos a gran escala</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap10.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Capítulo 10. El ciclo de trabajo: limpieza, calidad y transformación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 11. Estadística descriptiva, probabilidad e inferencia</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 12. Visualización de datos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 13. Fundamentos del aprendizaje automático</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 14. scikit-learn y el aprendizaje moderno</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 15. Privacidad y confidencialidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 16. Reproducibilidad, ingeniería, despliegue y ética</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#de-la-pregunta-al-dato-el-ciclo-completo" id="toc-de-la-pregunta-al-dato-el-ciclo-completo" class="nav-link active" data-scroll-target="#de-la-pregunta-al-dato-el-ciclo-completo">De la pregunta al dato: el ciclo completo</a></li>
+  <li><a href="#datos-ordenados-una-estructura-para-pensar" id="toc-datos-ordenados-una-estructura-para-pensar" class="nav-link" data-scroll-target="#datos-ordenados-una-estructura-para-pensar">Datos ordenados: una estructura para pensar</a></li>
+  <li><a href="#validación-de-datos-del-if-suelto-al-contrato" id="toc-validación-de-datos-del-if-suelto-al-contrato" class="nav-link" data-scroll-target="#validación-de-datos-del-if-suelto-al-contrato">Validación de datos: del <code>if</code> suelto al contrato</a>
+  <ul class="collapse">
+  <li><a href="#el-esquema-con-pandera" id="toc-el-esquema-con-pandera" class="nav-link" data-scroll-target="#el-esquema-con-pandera">El esquema con pandera</a></li>
+  <li><a href="#el-contrato-como-frontera" id="toc-el-contrato-como-frontera" class="nav-link" data-scroll-target="#el-contrato-como-frontera">El contrato como frontera</a></li>
+  </ul></li>
+  <li><a href="#datos-ausentes-por-qué-faltan-antes-que-cómo-rellenar" id="toc-datos-ausentes-por-qué-faltan-antes-que-cómo-rellenar" class="nav-link" data-scroll-target="#datos-ausentes-por-qué-faltan-antes-que-cómo-rellenar">Datos ausentes: por qué faltan antes que cómo rellenar</a>
+  <ul class="collapse">
+  <li><a href="#los-tres-mecanismos" id="toc-los-tres-mecanismos" class="nav-link" data-scroll-target="#los-tres-mecanismos">Los tres mecanismos</a></li>
+  <li><a href="#detectar-imputar-o-no-imputar" id="toc-detectar-imputar-o-no-imputar" class="nav-link" data-scroll-target="#detectar-imputar-o-no-imputar">Detectar, imputar o no imputar</a></li>
+  </ul></li>
+  <li><a href="#los-otros-tres-frentes-duplicados-tipos-y-atípicos" id="toc-los-otros-tres-frentes-duplicados-tipos-y-atípicos" class="nav-link" data-scroll-target="#los-otros-tres-frentes-duplicados-tipos-y-atípicos">Los otros tres frentes: duplicados, tipos y atípicos</a>
+  <ul class="collapse">
+  <li><a href="#duplicados" id="toc-duplicados" class="nav-link" data-scroll-target="#duplicados">Duplicados</a></li>
+  <li><a href="#tipos-la-puerta-de-entrada" id="toc-tipos-la-puerta-de-entrada" class="nav-link" data-scroll-target="#tipos-la-puerta-de-entrada">Tipos: la puerta de entrada</a></li>
+  <li><a href="#valores-atípicos" id="toc-valores-atípicos" class="nav-link" data-scroll-target="#valores-atípicos">Valores atípicos</a></li>
+  </ul></li>
+  <li><a href="#transformación-y-creación-de-variables" id="toc-transformación-y-creación-de-variables" class="nav-link" data-scroll-target="#transformación-y-creación-de-variables">Transformación y creación de variables</a>
+  <ul class="collapse">
+  <li><a href="#variables-con-dominio-dentro" id="toc-variables-con-dominio-dentro" class="nav-link" data-scroll-target="#variables-con-dominio-dentro">Variables con dominio dentro</a></li>
+  <li><a href="#la-fuga-de-datos" id="toc-la-fuga-de-datos" class="nav-link" data-scroll-target="#la-fuga-de-datos">La fuga de datos</a></li>
+  </ul></li>
+  <li><a href="#la-política-de-datos-medir-no-proclamar" id="toc-la-política-de-datos-medir-no-proclamar" class="nav-link" data-scroll-target="#la-política-de-datos-medir-no-proclamar">La política de datos: medir, no proclamar</a></li>
+  <li><a href="#un-ejemplo-integrador-del-fichero-sucio-al-dato-de-confianza" id="toc-un-ejemplo-integrador-del-fichero-sucio-al-dato-de-confianza" class="nav-link" data-scroll-target="#un-ejemplo-integrador-del-fichero-sucio-al-dato-de-confianza">Un ejemplo integrador: del fichero sucio al dato de confianza</a></li>
+  <li><a href="#lecturas-recomendadas" id="toc-lecturas-recomendadas" class="nav-link" data-scroll-target="#lecturas-recomendadas">Lecturas recomendadas</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Capítulo 10. El ciclo de trabajo: limpieza, calidad y transformación</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="https://mybinder.org/v2/gh/mmunozpl/PythonCienciaDeDatos/HEAD?urlpath=lab/tree/cap10_limpieza.ipynb" class="btn btn-primary btn-sm" role="button">▶ Ejecutar este capítulo en Binder</a></p>
+<div class="callout callout-style-default callout-note callout-titled" title="El primer arranque tarda unos minutos">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>El primer arranque tarda unos minutos
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La primera vez que se abre, Binder construye el entorno en la nube (unos 10-20 min); verás una pantalla de progreso. Después queda en caché y abre en segundos. Si parece que no responde, espera a que termine de construirse o vuelve a intentarlo.</p>
+</div>
+</div>
+</div>
+<p>Se repite en la profesión que preparar los datos consume el 80 % del tiempo del científico de datos. Como casi todo folclore, la cifra tiene una genealogía más precisa que su versión de pasillo. La formulación original, en el prefacio de <span class="citation" data-cites="dasu2003exploratory">Dasu y Johnson (<a href="#ref-dasu2003exploratory" role="doc-biblioref">2003</a>)</span>, es doble: la minería exploratoria y la limpieza de datos constituyen «el 80 % del esfuerzo que determina el 80 % del valor» del resultado final; no dice solo que preparar cueste, dice que es ahí donde el análisis se gana o se pierde. El respaldo empírico más citado, una encuesta de CrowdFlower de 2016 recogida por Forbes <span class="citation" data-cites="press2016cleaning">(<a href="#ref-press2016cleaning" role="doc-biblioref">Press 2016</a>)</span>, arrojó un 60 % del tiempo limpiando y organizando datos más un 19 % recolectándolos: casi el 80 %, en efecto. Encuestas más recientes lo rebajan al entorno del 40–45 %, seguramente porque las herramientas han mejorado. No hay, pues, constante universal; hay un fondo real: la preparación domina el tiempo y, sobre todo, el valor.</p>
+<p>De ahí la tesis de este capítulo, que abre la parte del libro dedicada a los datos: prepararlos no es el trámite tedioso <em>previo</em> al análisis; es análisis. Decidir qué es un duplicado, qué significa un hueco y si se rellena, qué valor es físicamente imposible y cuál es solo incómodo: cada una de esas decisiones condiciona los resultados tanto como el modelo que se ajuste después, con una diferencia peligrosa: el modelo se declara en la sección de métodos y estas decisiones suelen quedar enterradas en un <em>script</em>. Un modelo mediocre sobre datos limpios es recuperable; uno brillante sobre datos sucios o mal entendidos es una trampa con apariencia de rigor.</p>
+<p>Recogemos además un testigo explícito. El cap.&nbsp;9 se cerró (§9.7) admitiendo que todo su edificio descansaba en un lujo que casi no se nota: datos sintéticos que llegan impecables, con tipos correctos y ausentes honradamente marcados. Los datos reales rara vez son tan corteses —el propio catálogo de Spotify <span class="citation" data-cites="spotifytracks">(<a href="#ref-spotifytracks" role="doc-biblioref"><span class="nocase">maharshipandya</span> 2022</a>)</span> trae rasgos con coma decimal, géneros con erratas y lecturas de tempo imposibles—, y limpiarlos y validarlos, dijimos entonces, es un oficio en sí mismo. Este capítulo es ese oficio.</p>
+<p>Lo desplegamos por etapas. Primero, el mapa: el ciclo completo del trabajo con datos (§10.1) y los datos ordenados (<em>tidy data</em>), la estructura que hace pensable cada etapa (§10.2). Después, las herramientas: el contrato de datos (<em>data contract</em>) explícito y su validación automática (§10.3); el tratamiento de los ausentes, que empieza por preguntarse por qué faltan (§10.4); el de los duplicados, los tipos mal leídos y los valores atípicos (<em>outliers</em>), en la §10.5; y la transformación que adapta los datos a la pregunta sin contaminar la respuesta (§10.6). Cierran el capítulo la política de datos que este libro practica desde el cap.&nbsp;1 y que aquí formalizamos (§10.7) —su lema cabe en tres palabras: medir, no proclamar— y un caso integrador que ensucia deliberadamente una rebanada del catálogo para repararla con método (§10.8). Nota de versión: esta edición se ha verificado con pandas&nbsp;2.3.3 y pandera&nbsp;0.32.1 sobre CPython&nbsp;3.11.</p>
+<section id="de-la-pregunta-al-dato-el-ciclo-completo" class="level2">
+<h2 class="anchored" data-anchor-id="de-la-pregunta-al-dato-el-ciclo-completo">De la pregunta al dato: el ciclo completo</h2>
+<p>El trabajo con datos no es lineal, pero tiene una anatomía reconocible que conviene llevar en la cabeza para no perderse en ella. Cabe en siete verbos: <strong>formular</strong> una pregunta falsable, <strong>obtener</strong> los datos que pueden responderla, <strong>limpiarlos</strong> y validarlos, <strong>explorarlos</strong>, <strong>modelar</strong> si la pregunta lo exige, <strong>interpretar</strong> los resultados con su incertidumbre y <strong>comunicar</strong> las conclusiones. La figura&nbsp;10.1 los dibuja, y lo más importante de ella son las flechas discontinuas: la exploración reformula la pregunta, el modelado destapa problemas en los datos que la limpieza no vio, y una comunicación honesta engendra preguntas nuevas. Quien presenta este ciclo como una cascada que se recorre una sola vez, de izquierda a derecha, describe un proyecto que nunca ha hecho.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/cap10/fig_01.svg" class="img-fluid figure-img"></p>
+<figcaption><strong>Figura&nbsp;10.1.</strong> <strong>El ciclo del trabajo con datos.</strong> El ciclo del trabajo con datos. Las flechas continuas marcan el orden nominal; las discontinuas, los retornos que lo convierten en un ciclo de verdad. La etapa sombreada es la de este capítulo.</figcaption>
+</figure>
+</div>
+<p>El primer verbo es el que más análisis arruina cuando se omite. Una pregunta falsable es una cuya respuesta puede ser que no: «¿es el reggaetón más bailable que el pop?» lo es; «¿qué dicen los datos de música?» no lo es, y quien parte de ella encontrará siempre <em>algo</em>, que es la manera más segura de no encontrar nada. El segundo paso tiene su propia disciplina —descarga idempotente, procedencia y fecha registradas—, que practicamos en el cap.&nbsp;5. Y los datos obtenidos deben <em>poder</em> responder la pregunta: a menudo no pueden —la variable clave no se midió, la muestra no cubre el periodo—, y decirlo en voz alta es parte del trabajo, no un fracaso. Los verbos restantes tienen sus capítulos: la exploración se apoyará en la estadística descriptiva del cap.&nbsp;11 y en la visualización del cap.&nbsp;12, que es también el idioma de la comunicación; el modelado y su evaluación honesta ocuparán los caps.&nbsp;13 y&nbsp;14. Este capítulo habita el centro del anillo: limpiar, validar y transformar.</p>
+<p>¿Qué distingue entonces al profesional del aficionado con soltura técnica? Tres hábitos que no requieren talento, solo disciplina. No saltarse etapas: del CSV recién descargado al modelo hay un atajo tentador, y todo lo que ese atajo se ahorra reaparece después disfrazado de resultado sorprendente. No engañarse: buscar activamente el dato que contradice la hipótesis propia, porque nadie más va a hacerlo con tanto conocimiento de causa. Y registrar cada decisión: un análisis es una cadena de decisiones —este umbral, aquel descarte, esa imputación—, cualquiera de ellas puede ser el origen de un error, y solo la cadena escrita en código, no en memoria, permite volver atrás y auditarla. No es otra cosa que la reproducibilidad del cap.&nbsp;1, aplicada eslabón a eslabón.</p>
+<p>Este ciclo no es nuevo en el libro: lo hemos vivido dos veces en miniatura. El <em>pipeline</em> del cap.&nbsp;4 (§4.9.4) —generar, deduplicar, contar, agrupar, seleccionar— fue su microcosmos con la biblioteca estándar, y ya entonces lo nombramos así. La ingesta del cap.&nbsp;5 (§5.10) recorrió con datos reales la mitad izquierda del anillo: descarga idempotente, parseo robusto, validación mínima, persistencia en Parquet y consulta. Lo que aquella validación tenía de artesanal —tres comprobaciones escritas a mano— es exactamente lo que este capítulo va a sistematizar.</p>
+</section>
+<section id="datos-ordenados-una-estructura-para-pensar" class="level2">
+<h2 class="anchored" data-anchor-id="datos-ordenados-una-estructura-para-pensar">Datos ordenados: una estructura para pensar</h2>
+<p>Dos promesas convergen aquí. En el cap.&nbsp;5, al leer un catálogo que ya llegaba con <em>una fila por pista</em>, anunciamos que aquel «cada fila, una observación» era el anticipo de un principio que sistematizaríamos; en el cap.&nbsp;8 (§8.4.3), al remodelar con <code>melt</code> y <code>pivot_table</code>, dimos la regla práctica —larga para analizar, ancha para presentar— y aplazamos su fundamento. El fundamento es de <span class="citation" data-cites="wilkinson2016tidy">Wickham (<a href="#ref-wilkinson2016tidy" role="doc-biblioref">2014</a>)</span>, que destiló en tres reglas qué hace «ordenado» a un <em>dataset</em> tabular:</p>
+<ol type="1">
+<li><p>cada <strong>variable</strong> tiene su columna;</p></li>
+<li><p>cada <strong>observación</strong> tiene su fila;</p></li>
+<li><p>cada <strong>tipo de unidad observacional</strong> tiene su tabla.</p></li>
+</ol>
+<p>Tres frases que parecen obvias hasta que se confrontan con un fichero real. El catálogo de Spotify llega, por fortuna, ya ordenado: cada fila es una pista y cada columna, un atributo suyo —la identidad, la <code>popularity</code> y los rasgos de audio—. No siempre se tiene esa suerte. Una disposición desordenada del mismo dato existe y es tentadora: una tabla con <em>una columna por género</em> —<code>pop</code>, <code>rock</code>, <code>jazz</code>…— que guardara bajo cada una la popularidad de sus pistas. Contra la primera regla, el género —una variable— no tendría columna: estaría repartido por los <em>nombres</em> de las columnas, que almacenarían datos en lugar de describirlos, y cualquier pregunta que cruzara géneros exigiría barrerlas todas. No es una disposición estúpida —para comparar dos géneros de un vistazo resulta cómoda, y por eso los informes la usan—, pero para operar estorba. El cap.&nbsp;5 (§5.10.3) nos ahorró ese trabajo: el catálogo venía con una fila por cada una de sus 113 999 pistas y no hubo nada que desdoblar. El Parquet que dejó aquel <em>pipeline</em> es, precisamente, un <em>dataset</em> ordenado:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>musica <span class="op">=</span> pd.read_parquet(<span class="st">"data/processed/musica.parquet"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(musica.shape)           <span class="co"># (113999, 20)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(musica[[<span class="st">"track_name"</span>, <span class="st">"track_genre"</span>, <span class="st">"energy"</span>, <span class="st">"tempo"</span>]].head(<span class="dv">3</span>))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#          track_name track_genre  energy   tempo</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 0            Comedy    acoustic   0.461  87.917</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 1  Ghost - Acoustic    acoustic   0.166  77.489</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 2    To Begin Again    acoustic   0.359  76.332</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Veinte columnas, veinte variables: la identidad (<code>track_id</code>, <code>track_name</code>, <code>artists</code>, <code>album_name</code>), la <code>popularity</code> que hace de objetivo y los rasgos de audio (<code>energy</code>, <code>tempo</code>, <code>danceability</code>…). Cada fila es una pista, la unidad observacional de esta tabla. Las lecturas que el analizador no resolvió no se borraron: sobreviven como un <code>tempo</code> de 0, un valor imposible que el cap.&nbsp;5 aprendió a leer como ausencia, porque un tema tiene pulso o no se midió, pero nunca late a cero. La tercera regla también se cumple, aunque por omisión: esta tabla no dice de qué país es cada artista ni cuántos oyentes acumula. El artista es otro tipo de unidad observacional —con su biografía, sus seguidores, su sello— y vive en otra tabla, que se uniría por el nombre cuando hiciera falta con el <code>merge</code> que estudiamos en el cap.&nbsp;8. Repetir esos atributos en cada una de las pistas de un artista prolífico los copiaría decenas de veces, con la garantía de que alguna copia acabaría desincronizada.</p>
+<p>Lo que en el cap.&nbsp;8 fue regla práctica es ahora criterio: la forma ordenada es la forma de <em>almacenar</em> y de <em>operar</em> —es la que entienden <code>groupby</code> y <code>merge</code> (§8.4)—, y la forma ancha —géneros en columnas— es una <em>vista</em> que se genera a demanda para presentar resultados o comparar géneros en paralelo, con las herramientas de remodelado ya conocidas (§8.4.3). El almacén, ordenado; el informe, ancho. La recompensa es que cada pregunta nueva cuesta una línea, no una contorsión:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rotas <span class="op">=</span> musica[musica[<span class="st">"tempo"</span>] <span class="op">==</span> <span class="dv">0</span>]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rotas.groupby(<span class="st">"track_genre"</span>).size()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>           .sort_values(ascending<span class="op">=</span><span class="va">False</span>).head(<span class="dv">4</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># track_genre</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># sleep      138</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># iranian      4</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># guitar       4</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># ambient      3</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># dtype: int64</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Saber si las 157 lecturas rotas se reparten entre géneros o se concentran en unos pocos —se concentran: 138 caen en <code>sleep</code>, música ambiental sin pulso claro— costó un filtro y una agrupación; sobre una tabla de géneros en columnas habría exigido barrerlas todas. Esa asimetría es todo el argumento, y es también la razón de que la manipulación práctica de datos gire en torno a estas idas y vueltas entre formas <span class="citation" data-cites="mckinney2022python">(<a href="#ref-mckinney2022python" role="doc-biblioref">McKinney 2022</a>)</span>. Hay además un dividendo menos visible: una tabla con una columna por variable es una tabla sobre la que se puede <em>declarar</em> qué tipo, qué dominio y qué rango debe cumplir cada variable. Esa declaración es la validación de esquema (<em>schema validation</em>), y convertirla en un contrato ejecutable es el asunto de la §10.3.</p>
+</section>
+<section id="validación-de-datos-del-if-suelto-al-contrato" class="level2">
+<h2 class="anchored" data-anchor-id="validación-de-datos-del-if-suelto-al-contrato">Validación de datos: del <code>if</code> suelto al contrato</h2>
+<p>En el cap.&nbsp;3 aprendimos a fallar bien: pedir perdón en vez de permiso (§3.9.6), dejar que la excepción cargue con el diagnóstico y detener el programa antes de que un error se propague disfrazado de resultado. Y en el integrador del cap.&nbsp;5 escribimos nuestra primera validación de datos real (§5.10.4): una función <code>validar()</code> que recorría las pistas y lanzaba <code>ValueError</code> ante un género desconocido, una clave duplicada o un tempo fuera de rango. Aquel cortafuegos artesanal cumplió su papel, pero tiene las limitaciones de todo <code>if</code> suelto. Primero, la expectativa vive enterrada en código imperativo: para saber qué se exige a los datos hay que leer el bucle. Segundo, solo protege si alguien se acuerda de llamarla, y se detiene en el primer fallo: útil para frenar el <em>pipeline</em>, pobre como diagnóstico. Tercero, no dice nada de los tipos de las columnas, y cada invariante nueva es otra rama que mantener.</p>
+<p>La alternativa es declarar, en lugar de programar, lo que los datos deben cumplir. La validación de esquema (<em>schema validation</em>) comprueba de forma automática y explícita que cada columna de un <em>dataset</em> tiene el tipo, el dominio y las restricciones que decimos que tiene. El esquema resultante funciona como un contrato de datos (<em>data contract</em>), y su ventaja frente a las comprobaciones sueltas es doble. Documenta: el esquema es una descripción legible de lo que se espera, un acuerdo verificable con quien produce los datos. Y convierte los errores silenciosos en fallos ruidosos: la pista duplicada, el género con errata o el tempo imposible se cazan en el momento en que entran, en lugar de aflorar como un resultado extraño tres pasos después, cuando ya nadie recuerda de qué fila salieron. Esta sección presenta el mecanismo con ejemplos deliberadamente pequeños; el informe de calidad completo sobre un fichero degradado de verdad —y su reparación— lo veremos en el caso integrador (§10.8).</p>
+<section id="el-esquema-con-pandera" class="level3">
+<h3 class="anchored" data-anchor-id="el-esquema-con-pandera">El esquema con pandera</h3>
+<p>La herramienta idiomática para validar tablas en 2026 es pandera, creada por Niels Bantilan y presentada en SciPy 2020 <span class="citation" data-cites="bantilan2020pandera">(<a href="#ref-bantilan2020pandera" role="doc-biblioref">Bantilan 2020</a>)</span>, hoy un proyecto de código abierto con licencia MIT mantenido bajo el paraguas de Union.ai y estable en su línea 0.32 <span class="citation" data-cites="panderadocs">(<a href="#ref-panderadocs" role="doc-biblioref"><span class="nocase">pandera developers</span> 2026</a>)</span>. Desde la versión 0.24 (mayo de 2025) la biblioteca se organiza por <em>backends</em> y se importa el que corresponde al motor de tablas que usamos: <code>import pandera.pandas as pa</code>. La forma clásica <code>import pandera as pa</code> aún funciona, pero emite un <code>FutureWarning</code> y no la usaremos.</p>
+<p>Retomemos el catálogo que dejó el cap.&nbsp;5 <span class="citation" data-cites="spotifytracks">(<a href="#ref-spotifytracks" role="doc-biblioref"><span class="nocase">maharshipandya</span> 2022</a>)</span> y quedémonos con una rebanada manejable: las pistas de seis géneros —<code>classical</code>, <code>hip-hop</code>, <code>jazz</code>, <code>pop</code>, <code>reggaeton</code> y <code>rock</code>—, deduplicadas por su clave natural, 5 916 en total. Su esquema cabe en una declaración:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandera.pandas <span class="im">as</span> pa</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>GENEROS <span class="op">=</span> [<span class="st">"classical"</span>, <span class="st">"hip-hop"</span>, <span class="st">"jazz"</span>, <span class="st">"pop"</span>, <span class="st">"reggaeton"</span>, <span class="st">"rock"</span>]</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>musica <span class="op">=</span> (pd.read_parquet(<span class="st">"data/processed/musica.parquet"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>          .query(<span class="st">"track_genre in @GENEROS"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>          .drop_duplicates(subset<span class="op">=</span>[<span class="st">"track_id"</span>, <span class="st">"track_genre"</span>])</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>          .reset_index(drop<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>          .assign(tempo<span class="op">=</span><span class="kw">lambda</span> d: d[<span class="st">"tempo"</span>].replace(<span class="fl">0.0</span>, np.nan)))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>esquema <span class="op">=</span> pa.DataFrameSchema(</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"track_id"</span>:    pa.Column(<span class="bu">str</span>),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"track_genre"</span>: pa.Column(<span class="bu">str</span>, pa.Check.isin(GENEROS),</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>                                 <span class="bu">coerce</span><span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"popularity"</span>:  pa.Column(<span class="bu">int</span>, pa.Check.in_range(<span class="dv">0</span>, <span class="dv">100</span>),</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>                                 <span class="bu">coerce</span><span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"energy"</span>:      pa.Column(<span class="bu">float</span>, pa.Check.in_range(<span class="fl">0.0</span>, <span class="fl">1.0</span>),</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>                                 <span class="bu">coerce</span><span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>        <span class="st">"tempo"</span>:       pa.Column(<span class="bu">float</span>, pa.Check.in_range(<span class="fl">0.0</span>, <span class="fl">250.0</span>),</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>                                 nullable<span class="op">=</span><span class="va">True</span>, <span class="bu">coerce</span><span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    unique<span class="op">=</span>[<span class="st">"track_id"</span>, <span class="st">"track_genre"</span>],</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Obsérvese que son las tres invariantes del <code>validar()</code> del cap.&nbsp;5, ahora declaradas. Cada <code>pa.Column</code> fija el tipo de la columna y, opcionalmente, sus comprobaciones: <code>Check.isin</code> exige pertenencia a un dominio cerrado (los seis géneros de nuestra rebanada) y <code>Check.in_range</code> un rango plausible (la <code>popularity</code> de 0 a 100, el <code>tempo</code> hasta 250 pulsaciones por minuto). El argumento <code>unique</code> de la tabla declara la clave natural compuesta: una pista no puede aparecer dos veces bajo el mismo género.</p>
+<p>Dos argumentos merecen pausa. El primero es <code>nullable=True</code> en <code>tempo</code>: las lecturas que el analizador no resolvió —un tempo de 0 que el cap.&nbsp;5 marcó ausente— son datos <em>válidos</em>, porque ausente no significa inválido —la distinción que el cap.&nbsp;5 se esforzó en preservar hasta el Parquet y que ya aprendimos a manejar como <code>NaN</code> (§8.3.1)—. Un esquema sin <code>nullable=True</code> convertiría cada ausencia legítima en un falso error; nótese además que la comprobación de rango se aplica solo a los valores presentes, de modo que un ausente jamás cuenta como «fuera de rango». El segundo es <code>coerce=True</code>: antes de comprobar, pandera intenta convertir la columna al tipo declarado y falla si no puede. Aquí eleva el tipado compacto que eligió el cap.&nbsp;5 (<code>int16</code>, <code>int8</code>, <code>float32</code>, <code>category</code>) a los tipos genéricos del contrato; quien prefiera conservar los tipos exactos puede declararlos como cadena (<code>pa.Column("int16")</code>) y omitir la conversión.</p>
+<p>El método <code>validate()</code> devuelve el <code>DataFrame</code> validado —lo que permite encadenarlo en un <em>pipeline</em>: <code>df.pipe(esquema.validate)</code>— o lanza una excepción. Sobre la rebanada limpia del cap.&nbsp;5, el contrato se cumple:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>validado <span class="op">=</span> esquema.validate(musica)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(validado.shape)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># (5916, 20)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>(validado[<span class="st">"tempo"</span>].isna().<span class="bu">sum</span>()))  <span class="co"># ausencias conservadas</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>¿Y si los datos incumplen? Introduzcamos una sola herida: un género que no existe en el dominio.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>roto <span class="op">=</span> musica.copy()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>roto.loc[<span class="dv">0</span>, <span class="st">"track_genre"</span>] <span class="op">=</span> <span class="st">"regeton"</span>   <span class="co"># errata: falta una g</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>esquema.validate(roto)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># pandera.errors.SchemaError: Column 'track_genre' failed</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#   element-wise validator number 0:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#   isin([...]) failure cases: regeton</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Es el estilo EAFP del cap.&nbsp;3 elevado a la escala del <em>dataset</em>: no preguntamos si los datos «parecen» correctos; intentamos validarlos, y la excepción trae el diagnóstico completo —qué columna, qué comprobación y qué valor la viola—.</p>
+<p>Ahora bien, <code>pa.errors.SchemaError</code> se detiene en el primer problema, igual que nuestro <code>validar()</code> artesanal. Para un informe de calidad queremos lo contrario: <em>todas</em> las violaciones de una pasada. Con <code>lazy=True</code>, pandera acumula los fallos y lanza <code>pa.errors.SchemaErrors</code> (en plural), cuyo atributo <code>failure_cases</code> es un <code>DataFrame</code> normal y corriente: un parte de fallos que se analiza con las herramientas de siempre. Sembramos tres violaciones distintas y las recogemos todas:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>roto <span class="op">=</span> musica.copy()</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>roto.loc[<span class="dv">0</span>, <span class="st">"tempo"</span>] <span class="op">=</span> <span class="op">-</span><span class="fl">1.0</span>             <span class="co"># bpm imposible</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>roto.loc[<span class="dv">1</span>, <span class="st">"tempo"</span>] <span class="op">=</span> <span class="fl">9999.0</span>           <span class="co"># centinela heredado</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>roto.loc[<span class="dv">2</span>, <span class="st">"track_genre"</span>] <span class="op">=</span> <span class="st">"regeton"</span>  <span class="co"># errata: falta una g</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    esquema.validate(roto, lazy<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> pa.errors.SchemaErrors <span class="im">as</span> err:</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    fallos <span class="op">=</span> err.failure_cases   <span class="co"># un DataFrame como otro cualquiera</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(fallos[[<span class="st">"column"</span>, <span class="st">"check"</span>, <span class="st">"failure_case"</span>, <span class="st">"index"</span>]])</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#         column                 check failure_case  index</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 0  track_genre    isin([...GENEROS])      regeton      2</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 1        tempo  in_range(0.0, 250.0)         -1.0      0</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 2        tempo  in_range(0.0, 250.0)       9999.0      1</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cada fila del parte es una violación con su columna, la comprobación incumplida, el valor culpable y su posición (<code>index</code>) en la tabla original. Y como <code>failure_cases</code> es un <code>DataFrame</code>, se filtra, se agrupa y se cuenta: un <code>value_counts()</code> sobre <code>check</code> resume el estado de salud del fichero en tres líneas. Las violaciones de la clave <code>unique</code>, que aquí no hemos provocado, aparecerían en ese mismo parte bajo la comprobación <code>multiple_fields_uniqueness</code>. Con tres heridas de juguete el parte se lee de un vistazo; su verdadero valor asoma cuando las violaciones se cuentan por cientos, y así lo explotaremos en el integrador (§10.8).</p>
+</section>
+<section id="el-contrato-como-frontera" class="level3">
+<h3 class="anchored" data-anchor-id="el-contrato-como-frontera">El contrato como frontera</h3>
+<p>Saber validar no basta: hay que decidir <em>dónde</em>. La respuesta corta es «en la frontera». El esquema es un contrato con quien produce los datos —el portal municipal, otro equipo, nuestro propio yo de hace tres meses—, y un contrato se hace valer en la aduana, no en el salón. Cuanto más lejos de la ingesta aflora un error, más caro resulta rastrearlo: un <code>NaN</code> inesperado en la media de un grupo no dice de qué fila salió, mientras que un <code>SchemaError</code> en la lectura señala columna, valor y posición. De ahí la regla práctica: validar todo dato externo en cuanto entra —sospechoso hasta que pasa el contrato— y volver a validar tras cada transformación relevante, porque el esquema de salida de una etapa documenta exactamente lo que la siguiente puede asumir. Cuando el productor es un tercero, el esquema versionado junto al código hace de acuerdo explícito: si el proveedor cambia mañana la grafía de un género, el contrato lo detecta el primer día con un mensaje que cita la cláusula violada, en lugar de dejar que el catálogo se contamine en silencio durante meses.</p>
+<p>El contrato, además, no está casado con pandas. Desde su versión 0.19 (2024), pandera valida también <code>DataFrame</code> de polars —<code>import pandera.polars</code>—, de modo que el motor a escala que estudiamos en el cap.&nbsp;9 (§9.2) puede someterse al mismo esquema conceptual sin reescribir las reglas.</p>
+<p>¿Y cuando el dato no es una tabla? La respuesta JSON de una API, un fichero de configuración o cada registro individual de un flujo se validan mejor con pydantic <span class="citation" data-cites="pydanticdocs">(<a href="#ref-pydanticdocs" role="doc-biblioref">Pydantic developers 2026</a>)</span>, la herramienta idiomática para datos no tabulares: desde su versión&nbsp;2 (2023) delega la validación en un núcleo escrito en Rust, y en 2026 es estable en su línea 2.13. Se declara un modelo con tipos y restricciones, y la validación ocurre al construir el objeto:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pydantic <span class="im">import</span> BaseModel, Field</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Pista(BaseModel):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    track_id: <span class="bu">str</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    track_genre: <span class="bu">str</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    tempo: <span class="bu">float</span> <span class="op">|</span> <span class="va">None</span> <span class="op">=</span> Field(default<span class="op">=</span><span class="va">None</span>, ge<span class="op">=</span><span class="fl">0.0</span>, le<span class="op">=</span><span class="fl">250.0</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>Pista(track_id<span class="op">=</span><span class="st">"4uLU6h"</span>, track_genre<span class="op">=</span><span class="st">"pop"</span>, tempo<span class="op">=-</span><span class="fl">1.0</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ValidationError: 1 validation error for Pista</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># tempo</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#   Input should be greater than or equal to 0</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#   [type=greater_than_equal, input_value=-1.0, ...]</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Ambas herramientas son complementarias, no rivales: pandera valida la tabla entera de una vez; pydantic, el registro suelto en la frontera de un servicio. En nuestro <em>pipeline</em> de música, un modelo <code>Pista</code> vigilaría cada registro del catálogo y el <code>DataFrameSchema</code> certificaría el <em>dataset</em> ensamblado.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="Avanzado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Avanzado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Avanzado — Tests para los datos.</strong> A escala industrial, la validación de esquema se funde con la disciplina del <em>testing</em>. Great Expectations —hoy GX Core, con licencia Apache&nbsp;2.0— formula «expectativas» sobre los datos al estilo de las aserciones de un test unitario y ejecuta el mismo juego de reglas sobre pandas, Spark o un almacén SQL, generando informes de calidad pensados para compartirse entre equipos. La idea de fondo, común a pandera y GX, es que los datos merecen la misma red de seguridad que el código: los contratos se versionan junto al proyecto y se ejecutan automáticamente con cada actualización del <em>dataset</em>, como parte de la integración continua que veremos en el cap.&nbsp;16. Un <em>pipeline</em> profesional se pone en rojo cuando los datos rompen el contrato, exactamente igual que cuando el código rompe un test.</p>
+</div>
+</div>
+<p>Un contrato que falla, sin embargo, no arregla nada por sí mismo: señala. Reparar lo señalado —ausencias, duplicados, tipos rotos, valores atípicos— es un oficio con sus propias decisiones, y a él dedicamos la sección siguiente.</p>
+</section>
+</section>
+<section id="datos-ausentes-por-qué-faltan-antes-que-cómo-rellenar" class="level2">
+<h2 class="anchored" data-anchor-id="datos-ausentes-por-qué-faltan-antes-que-cómo-rellenar">Datos ausentes: por qué faltan antes que cómo rellenar</h2>
+<p>Un esquema como el de la sección anterior detecta los huecos; decidir qué hacer con ellos es otro oficio, y empieza por resistirse a la pregunta refleja. Ante una columna con ausentes, el impulso es preguntar «¿cómo los relleno?»; la pregunta correcta es «¿por qué faltan?». La distinción no es retórica: de la respuesta depende que una estrategia sea legítima o que fabrique datos con aspecto de lecturas medidas. El terreno viene abonado de capítulos anteriores. En el cap.&nbsp;2 (§2.10) distinguimos la <em>ausencia</em> del <em>vacío legítimo</em> y dejamos dicho que rellenar un <code>NaN</code> desconocido no es lo mismo que sobrescribir un cero medido; en el cap.&nbsp;8 (§8.3) aprendimos la mecánica —<code>isna()</code>, <code>fillna()</code>, <code>dropna()</code>, el centinela de coma flotante de §8.3.1— y comprobamos que ninguna de las dos salidas es neutral. Lo que faltaba, y es materia de esta sección, es el marco: una taxonomía de los <em>motivos</em> de la ausencia que diga qué estrategia es defendible en cada caso, y con ella la imputación (<em>imputation</em>) con fundamento que el cap.&nbsp;8 dejó prometida.</p>
+<section id="los-tres-mecanismos" class="level3">
+<h3 class="anchored" data-anchor-id="los-tres-mecanismos">Los tres mecanismos</h3>
+<p>La estadística distingue tres mecanismos de ausencia. La taxonomía nace en <span class="citation" data-cites="rubin1976inference">(<a href="#ref-rubin1976inference" role="doc-biblioref">Rubin 1976</a>)</span>, el artículo que acuñó la expresión <em>missing at random</em>; los tres términos con que hoy se nombra la tríada se consolidaron en la tradición de <span class="citation" data-cites="littlerubin2019missing">(<a href="#ref-littlerubin2019missing" role="doc-biblioref">Little y Rubin 2019</a>)</span>, el texto de referencia sobre análisis con datos incompletos. Los tres se dejan contar con el catálogo de música <span class="citation" data-cites="spotifytracks">(<a href="#ref-spotifytracks" role="doc-biblioref"><span class="nocase">maharshipandya</span> 2022</a>)</span>:</p>
+<dl>
+<dt>Completamente al azar (<em>MCAR, missing completely at random</em>).</dt>
+<dd>
+<p>La probabilidad de que un valor falte no depende de nada: ni de las columnas observadas ni del valor ausente. Es el hueco del fallo puntual de extracción: la pista se analizó, el valor se perdió por el camino, y esa pérdida golpea cualquier pista de cualquier género con la misma probabilidad. Bajo MCAR, las filas completas son una muestra aleatoria de la tabla: descartar los huecos no sesga (solo reduce el tamaño muestral) y una imputación sencilla es razonable.</p>
+</dd>
+<dt>Al azar (<em>MAR, missing at random</em>).</dt>
+<dd>
+<p>La ausencia depende de lo <em>observado</em>, no del valor que falta. El proveedor reprocesa un género entero y una tanda falla: sus huecos no caen en cualquier parte, se concentran en <em>ese</em> género, una columna visible en la tabla. El nombre es traicionero: no significa «al azar sin más», sino «al azar una vez condicionado a lo observado». Dentro del subgrupo que explica la ausencia, el hueco vuelve a ser inocente, y por eso las estrategias <em>por grupo</em> tienen aquí su fundamento.</p>
+</dd>
+<dt>No al azar (<em>MNAR, missing not at random</em>).</dt>
+<dd>
+<p>La ausencia depende del propio valor que no vemos. Un analizador que no detecta el pulso justo en la música sin ritmo marcado —<code>ambient</code>, <code>sleep</code>— no abre huecos cualesquiera: borra sistemáticamente los temas sin ritmo. Ninguna receta basada en lo observado puede reconstruirlos —la mediana de lo que sí vemos inventa un pulso donde no lo hay— y el análisis honesto exige modelar el mecanismo o acotar el daño.</p>
+</dd>
+</dl>
+<p>La figura&nbsp;10.2 resume qué determina el hueco en cada caso. Y conviene subrayar por qué importa tanto: la estrategia válida depende del mecanismo, pero el mecanismo <em>no se ve en los datos</em>. Dos tablas con huecos idénticos pueden venir una de un fallo de extracción y otra de un analizador que no detecta el pulso; ningún <code>isna()</code> las distingue. Clasificar la ausencia es una hipótesis sobre el proceso que generó los datos —del dominio, no de pandas—, y se defiende con conocimiento del productor: leyendo la documentación del proveedor, preguntando por cómo se extraen los rasgos, comparando géneros. Los contrastes formales solo ayudan a medias: pueden rechazar MCAR, pero nunca separar MAR de MNAR con los datos observados <span class="citation" data-cites="littlerubin2019missing">(<a href="#ref-littlerubin2019missing" role="doc-biblioref">Little y Rubin 2019</a>)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/cap10/fig_02.svg" class="img-fluid figure-img"></p>
+<figcaption><strong>Figura&nbsp;10.2.</strong> <strong>Los tres mecanismos de ausencia.</strong> Qué determina el hueco en cada mecanismo: en MCAR, nada de la tabla; en MAR, columnas observadas (qué género); en MNAR, el propio valor que falta (flecha discontinua: no podemos observarlo). El mecanismo no se ve en los datos: es una hipótesis sobre el proceso que los generó.</figcaption>
+</figure>
+</div>
+</section>
+<section id="detectar-imputar-o-no-imputar" class="level3">
+<h3 class="anchored" data-anchor-id="detectar-imputar-o-no-imputar">Detectar, imputar o no imputar</h3>
+<p>La hipótesis sobre el mecanismo se construye mirando <em>dónde</em> caen los huecos. Volvamos a la rebanada del cap.&nbsp;5 y crucemos los ausentes por género con el dividir-aplicar-combinar de §8.4.1:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>musica <span class="op">=</span> (pd.read_parquet(<span class="st">"data/processed/musica.parquet"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>          .query(<span class="st">"track_genre in @GENEROS"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>          .drop_duplicates(subset<span class="op">=</span>[<span class="st">"track_id"</span>, <span class="st">"track_genre"</span>])</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>          .reset_index(drop<span class="op">=</span><span class="va">True</span>))</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)   <span class="co"># el extractor falla en ~3 %</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>musica.loc[rng.random(<span class="bu">len</span>(musica)) <span class="op">&lt;</span> <span class="fl">0.03</span>, <span class="st">"energy"</span>] <span class="op">=</span> np.nan</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(musica[<span class="st">"energy"</span>].isna().<span class="bu">sum</span>())    <span class="co"># 159</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>ausentes <span class="op">=</span> musica[musica[<span class="st">"energy"</span>].isna()]</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(ausentes.groupby(<span class="st">"track_genre"</span>).size())</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># track_genre</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co"># classical    29</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co"># hip-hop      19</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># jazz         26</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># pop          30</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># reggaeton    29</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># rock         26</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La pregunta que responde esta tabla es «¿se concentran o se reparten?». Se reparten: cada género reúne cerca de mil pistas y los huecos van de 19 a 30 por género, entre el 1,9 y el 3,0 %, sin ninguna celda desbocada. Un reparto así es <em>compatible</em> con MCAR —y en este ejemplo lo es por construcción: la semilla 42 repartió las ausencias al azar—, pero la tabla sola no lo demuestra; con datos de verdad la respuesta está en cómo el proveedor extrae los rasgos <span class="citation" data-cites="spotifytracks">(<a href="#ref-spotifytracks" role="doc-biblioref"><span class="nocase">maharshipandya</span> 2022</a>)</span>, no en el <code>groupby</code>. Si los 159 huecos se apilaran en un solo género, la hipótesis natural sería MAR (una tanda reprocesada) y el tratamiento, otro.</p>
+<p>Con el diagnóstico delante, las estrategias, de la más barata a la más comprometida. <strong>Eliminar filas</strong> basta cuando los ausentes son pocos, el mecanismo plausible es MCAR y el análisis agrega: es lo que hemos hecho —casi sin verlo— durante todo el libro, porque <code>count</code> y <code>mean</code> ya ignoran los huecos (§8.3). <strong>Imputar un estadístico global</strong> es la tentación siguiente y su peligro quedó impreso en el cap.&nbsp;8: la mediana global de <code>energy</code> es 0,59, y 0,59 es un dato absurdo para un hueco de <code>classical</code>, cuya energía ronda 0,14, porque la cifra mezcla géneros de perfil acústico distinto. <strong>Imputar por grupo</strong> corrige exactamente eso, y salda la promesa del cap.&nbsp;8: el <code>transform</code> de §8.4 difunde el estadístico de <em>cada</em> género a sus propias filas, de modo que cada hueco recibe la mediana de su género:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>grupos <span class="op">=</span> musica.groupby(<span class="st">"track_genre"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(grupos[<span class="st">"energy"</span>].median().<span class="bu">round</span>(<span class="dv">3</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># track_genre</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># classical    0.144</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># hip-hop      0.690</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co"># jazz         0.332</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># pop          0.618</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># reggaeton    0.745</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co"># rock         0.704</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>mediana_grupo <span class="op">=</span> grupos[<span class="st">"energy"</span>].transform(<span class="st">"median"</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>imputado <span class="op">=</span> musica[<span class="st">"energy"</span>].fillna(mediana_grupo)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(imputado.isna().<span class="bu">sum</span>())         <span class="co"># 0</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Seis medianas, una por género, en lugar de una global: un hueco de <code>classical</code> recibe 0,14 y no 0,59. Es una imputación defendible bajo MAR con el género como condicionante; su factura, también conocida: aplana la varianza de cada género y trata todas sus pistas como intercambiables.</p>
+<p>Cuando el hueco no cae en una serie temporal —y el catálogo no la tiene—, la mediana por grupo no es la única alternativa a la global: si dos rasgos van de la mano, el hueco de uno se estima desde el otro. La energía y el <code>loudness</code> (el volumen en decibelios) están fuertemente ligados —más volumen, más energía—, con una correlación de 0,85 en esta rebanada, así que una regresión lineal traduce el <code>loudness</code> observado, que rara vez falta, en una estimación de la energía ausente:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>obs <span class="op">=</span> musica.dropna(subset<span class="op">=</span>[<span class="st">"energy"</span>])</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>pendiente, corte <span class="op">=</span> np.polyfit(obs[<span class="st">"loudness"</span>], obs[<span class="st">"energy"</span>], <span class="dv">1</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(pendiente, <span class="dv">3</span>), <span class="bu">round</span>(corte, <span class="dv">2</span>))   <span class="co"># 0.034 0.86</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>sin_energia <span class="op">=</span> musica[musica[<span class="st">"energy"</span>].isna()].iloc[<span class="dv">0</span>]</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>estimada <span class="op">=</span> pendiente <span class="op">*</span> sin_energia[<span class="st">"loudness"</span>] <span class="op">+</span> corte</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(sin_energia[<span class="st">"loudness"</span>], <span class="dv">1</span>),</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>      <span class="bu">round</span>(estimada, <span class="dv">3</span>))                      <span class="co"># -14.2 0.378</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>El hueco de una pista con <code>loudness</code> <span class="math inline">\(-14{,}2\)</span> decibelios recibe 0,378: para dos rasgos tan correlacionados, difícilmente habrá mejor estimación con una sola columna. El freno de seguridad aquí no es un límite de huecos consecutivos, sino el rango observado: extrapolar la recta a un <code>loudness</code> fuera del rango medido fabrica una energía que ningún dato respalda, igual que una interpolación temporal sin límite cruzaría un boquete de semanas con una recta impasible que ninguna herramienta posterior distinguiría de lo auténtico.</p>
+<p>Queda la decisión más importante, que es no imputar. Las lecturas rotas del catálogo no son huecos accidentales: el analizador devolvió un <code>tempo</code> de 0 porque no encontró un pulso, y el cap.&nbsp;5 las marcó ausentes <span class="citation" data-cites="spotifytracks">(<a href="#ref-spotifytracks" role="doc-biblioref"><span class="nocase">maharshipandya</span> 2022</a>)</span>. El productor dijo «esto no lo sé medir»; imputarlo es fabricar un tempo justo donde quien analiza la señal se rindió. Peor aún: como esas lecturas se apiñan en la música sin ritmo marcado —138 de las 157 en <code>sleep</code>—, esa ausencia se acerca a MNAR, y cualquier relleno basado en lo observado inventaría un pulso exactamente donde no lo hay. Por eso los listados anteriores imputan sobre copias (<code>imputado</code>, <code>estimada</code>) para mostrar la técnica, y el catálogo sigue su camino con sus lecturas rotas intactas: convertidas en ausencia explícita en la validación del pipeline (§5.10.4) y excluidas de cada agregación desde entonces. Conservar el hueco <em>es</em> el tratamiento correcto cuando la ausencia lleva la firma del productor; los estadísticos del cap.&nbsp;11 agradecerán trabajar sobre lecturas, no sobre rellenos.</p>
+<p>Existen, en fin, imputaciones por modelo: la de <span class="math inline">\(k\)</span> vecinos más próximos rellena cada hueco con los valores de las filas más parecidas, y la iterativa modela cada columna en función de las demás y refina las estimaciones en varias pasadas; la imputación múltiple, estándar en estadística, repite el proceso varias veces para no ocultar la incertidumbre del relleno <span class="citation" data-cites="littlerubin2019missing vanderplas2023handbook">(<a href="#ref-littlerubin2019missing" role="doc-biblioref">Little y Rubin 2019</a>; <a href="#ref-vanderplas2023handbook" role="doc-biblioref">VanderPlas 2023</a>)</span>. Las veremos con las herramientas de modelado del cap.&nbsp;13, y ninguna deroga la regla de esta sección: primero el mecanismo, después el método.</p>
+</section>
+</section>
+<section id="los-otros-tres-frentes-duplicados-tipos-y-atípicos" class="level2">
+<h2 class="anchored" data-anchor-id="los-otros-tres-frentes-duplicados-tipos-y-atípicos">Los otros tres frentes: duplicados, tipos y atípicos</h2>
+<p>Los ausentes son el problema más estudiado, pero rara vez llegan solos: un <em>dataset</em> real trae además filas repetidas, columnas con el tipo equivocado y valores que ningún proceso pudo producir. Los tres frentes comparten un patrón: pandas los <em>detecta</em> con una llamada, pero qué hacer con lo detectado es una decisión nuestra, casi siempre de dominio. Los recorremos sobre la rebanada del catálogo <span class="citation" data-cites="spotifytracks">(<a href="#ref-spotifytracks" role="doc-biblioref"><span class="nocase">maharshipandya</span> 2022</a>)</span> y cerramos con la cadena que los ataca en orden.</p>
+<section id="duplicados" class="level3">
+<h3 class="anchored" data-anchor-id="duplicados">Duplicados</h3>
+<p>Los duplicados nacen de la fontanería: un fichero cargado dos veces, un volcado del proveedor que solapa con el anterior, una concatenación repetida. Antes de buscarlos, una pregunta previa: ¿duplicado <em>de qué</em>? Aquí una pista queda identificada por su <code>track_id</code> y su <code>track_genre</code>: esa combinación es su clave natural (<em>natural key</em>), y dos filas con la misma clave son dos versiones de <em>la misma pista bajo el mismo género</em>, tengan o no los mismos valores. Inyectemos ambos casos sobre las primeras filas del <em>dataset</em> del capítulo&nbsp;5:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>musica <span class="op">=</span> (pd.read_parquet(<span class="st">"data/processed/musica.parquet"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>          .query(<span class="st">"track_genre in @GENEROS"</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>          .drop_duplicates(subset<span class="op">=</span>[<span class="st">"track_id"</span>, <span class="st">"track_genre"</span>])</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>          .reset_index(drop<span class="op">=</span><span class="va">True</span>))</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>CLAVE <span class="op">=</span> [<span class="st">"track_id"</span>, <span class="st">"track_genre"</span>]</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>mini <span class="op">=</span> musica.head(<span class="dv">4</span>).copy()</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>repetida <span class="op">=</span> mini.iloc[[<span class="dv">1</span>]]                          <span class="co"># copia exacta</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>conflicto <span class="op">=</span> mini.iloc[[<span class="dv">3</span>]].assign(popularity<span class="op">=</span><span class="dv">99</span>)  <span class="co"># misma clave</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>sucio <span class="op">=</span> pd.concat([mini, repetida, conflicto],</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                  ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sucio.duplicated().<span class="bu">sum</span>())            <span class="co"># filas identicas</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 1</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sucio.duplicated(subset<span class="op">=</span>CLAVE).<span class="bu">sum</span>())</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 2</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>duplicated()</code> sin argumentos solo marca filas idénticas de punta a punta y por eso ve un único duplicado: la copia exacta. Con <code>subset=CLAVE</code> compara solo la clave y encuentra los dos. El segundo caso es el difícil —dos valores para la misma medición— y conviene verlo entero con <code>keep=False</code>, que marca todas las apariciones:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sucio[sucio.duplicated(subset<span class="op">=</span>CLAVE, keep<span class="op">=</span><span class="va">False</span>)]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>      [[<span class="st">"track_id"</span>, <span class="st">"track_genre"</span>, <span class="st">"popularity"</span>]])</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                  track_id track_genre  popularity</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 1  72HdutlIHBZJ7WT1xVAAZT   classical          59</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 3  3YRj4jmwois2ctPnhwSwFo   classical          68</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 4  72HdutlIHBZJ7WT1xVAAZT   classical          59</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 5  3YRj4jmwois2ctPnhwSwFo   classical          99</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(sucio.drop_duplicates()))              <span class="co"># solo la copia</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 5</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(sucio.drop_duplicates(subset<span class="op">=</span>CLAVE)))  <span class="co"># gana la primera</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 4</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(sucio.drop_duplicates(subset<span class="op">=</span>CLAVE, keep<span class="op">=</span><span class="va">False</span>)))</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 2</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Las filas 1 y 4 son la copia exacta: eliminarla es limpieza sin riesgo. Las filas 3 y 5 discrepan: la misma pista bajo <code>classical</code> no pudo tener a la vez popularidad 59 y 99, así que una de las dos sobra, y <em>cuál</em> sobra no lo decide pandas. <code>keep="first"</code> y <code>keep="last"</code> eligen por posición, razonable solo si el orden significa algo (si un volcado posterior corrige al anterior, quedarse con el último es regla documentable); si no sabemos nada, conservar una al azar es limpieza disfrazada: <code>keep=False</code> descarta ambas y documenta el conflicto.</p>
+<p>El matiz simétrico también importa: la misma canción bajo dos géneros <em>distintos</em> —clásica y pop, pongamos— no es un duplicado —su clave difiere en <code>track_genre</code>— sino una coincidencia legítima (y en el catálogo completo hay 24 259 pistas así). Y una clave corta de más es peligrosa: deduplicar solo por <code>track_id</code> «deduplicaría» esas versiones legítimas. La clave la dicta el dominio.</p>
+</section>
+<section id="tipos-la-puerta-de-entrada" class="level3">
+<h3 class="anchored" data-anchor-id="tipos-la-puerta-de-entrada">Tipos: la puerta de entrada</h3>
+<p>Ningún criterio de calidad funciona sobre una columna con el tipo equivocado: no hay rango físico que comprobar sobre cadenas, ni media que calcular, y hasta el orden engaña (como texto, <code>"9"</code> es mayor que <code>"10"</code>). Como vimos en §5.3, lo ideal es declarar los tipos al leer —<code>dtype=</code>, <code>na_values=</code>, incluso <code>decimal=","</code>—, pero ante sorpresas la columna aterriza como <code>object</code> y hay que convertirla con <code>pd.to_numeric</code> y <code>errors="coerce"</code>: lo inconvertible se vuelve <code>NaN</code> en lugar de detener el programa. Esa comodidad exige la disciplina de <em>mirar lo coaccionado</em>: comparar los ausentes antes y después —con las máscaras booleanas de §7.2.3— revela exactamente qué no era convertible:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>crudo <span class="op">=</span> pd.Series([<span class="st">"0.676"</span>, <span class="st">"0,842"</span>, <span class="st">"N/A"</span>, <span class="st">"0.55"</span>])</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> pd.to_numeric(crudo, errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>sospechosos <span class="op">=</span> num.isna() <span class="op">&amp;</span> crudo.notna()   <span class="co"># nuevos ausentes</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(crudo[sospechosos].tolist())</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ['0,842', 'N/A']</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>num <span class="op">=</span> pd.to_numeric(crudo.<span class="bu">str</span>.replace(<span class="st">","</span>, <span class="st">"."</span>, regex<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>                    errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>(num.isna().<span class="bu">sum</span>()))               <span class="co"># solo queda 'N/A'</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 1</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La inspección cambia el tratamiento: <code>"0,842"</code> no es un dato malo sino un rasgo bien medido con coma decimal, y se <em>repara</em>; <code>"N/A"</code> sí es un ausente y queda como <code>NaN</code> documentado. Coaccionar sin mirar habría tirado un dato legítimo. La alternativa histórica <code>errors="ignore"</code> quedó obsoleta en pandas 2.2 y eliminada en pandas 3.0; en la 2.3.3 de este libro, <code>"coerce"</code> más inspección es la vía idiomática <span class="citation" data-cites="pandasdocs">(<a href="#ref-pandasdocs" role="doc-biblioref">The pandas development team 2026</a>)</span>.</p>
+<p>Con los booleanos la trampa es peor: la conversión equivocada no produce <code>NaN</code> sino un valor plausible. El CSV trae <code>explicit</code> como la cadena <code>"True"</code> o <code>"False"</code>, y como toda cadena no vacía es verdadera, <code>bool("False")</code> devuelve <code>True</code>: convertir con <code>bool()</code> marcaría explícitas todas las pistas. Ningún error saltará jamás; hay que comparar contra <code>"True"</code> de forma explícita, como ya advertimos en el cap.&nbsp;5.</p>
+<p>Para las columnas categóricas, el equivalente es <em>fijar</em> las categorías: el dtype <code>category</code> que vimos en §8.3.2 acepta cualquier valor que aparezca; con <code>categories=</code> explícitas, cuanto no esté en la lista es <code>NaN</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>gen <span class="op">=</span> pd.Series([<span class="st">"pop"</span>, <span class="st">"regeton"</span>, <span class="st">"rock"</span>, <span class="st">"POP"</span>])</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>fijada <span class="op">=</span> pd.Categorical(gen, categories<span class="op">=</span>GENEROS)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.Series(fijada))</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 0     pop</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 1     NaN</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 2    rock</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3     NaN</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># dtype: category</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Categories (6, object): ['classical', 'hip-hop', 'jazz',</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="co">#                          'pop', 'reggaeton', 'rock']</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>El <code>"regeton"</code> —sin una de sus ges— y el <code>"POP"</code> en mayúsculas, erratas clásicas, habrían formado sus propios grupos diminutos en cualquier agregación; aquí afloran como ausentes, donde las auditorías con <code>isna</code> que practicamos desde §8.3 los capturan. Convertir errores silenciosos en ausentes visibles es buen negocio.</p>
+</section>
+<section id="valores-atípicos" class="level3">
+<h3 class="anchored" data-anchor-id="valores-atípicos">Valores atípicos</h3>
+<p>Un valor atípico (<em>outlier</em>) es una observación sospechosamente alejada del resto, y la palabra clave es «sospechosamente»: el primer criterio no es estadístico sino de dominio. Un tempo negativo es imposible y un centinela como 9999 delata un código de error; en cambio, un tempo de 210 en un tema de <em>drum and bass</em> puede ser real, y borrarlo por «raro» destruiría información legítima. El rango plausible —aquí, de 0 a 250 pulsaciones por minuto— lo dicta el dominio; lo que lo viola se descarta. Los criterios estadísticos entran después y no dictaminan: señalan candidatos.</p>
+<p>El más veterano son las vallas de Tukey: se calcula el rango intercuartílico (<em>IQR</em>), la distancia entre el primer y el tercer cuartil, y se trazan vallas interiores a <span class="math inline">\(1{,}5\cdot\)</span>IQR de los cuartiles y exteriores a <span class="math inline">\(3\cdot\)</span>IQR <span class="citation" data-cites="tukey1977eda">(<a href="#ref-tukey1977eda" role="doc-biblioref">Tukey 1977</a>)</span>. Entre ambas, atípico; más allá de la exterior, extremo. Los factores <span class="math inline">\(1{,}5\)</span> y <span class="math inline">\(3\)</span> son heurísticas para explorar, no una ley (figura&nbsp;10.3).</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/cap10/fig_03.svg" class="img-fluid figure-img"></p>
+<figcaption><strong>Figura&nbsp;10.3.</strong> <strong>Vallas de Tukey.</strong> La caja cubre el rango intercuartílico y las vallas se trazan a <span class="math inline">\(1{,}5\cdot\)</span>IQR (interiores) y <span class="math inline">\(3\cdot\)</span>IQR (exteriores) de los cuartiles; entre ambas, un atípico que investigar; más allá, un caso extremo <span class="citation" data-cites="tukey1977eda">(<a href="#ref-tukey1977eda" role="doc-biblioref">Tukey 1977</a>)</span>.</figcaption>
+</figure>
+</div>
+<p>La alternativa escolar es la puntuación <span class="math inline">\(z\)</span>: restar la media, dividir por la desviación típica y marcar lo que pase de <span class="math inline">\(\pm 3\sigma\)</span>. Su trampa es elegante: media y desviación se calculan <em>con</em> el atípico dentro, y un valor monstruoso infla la desviación hasta camuflarse a sí mismo. La <span class="math inline">\(z\)</span> modificada de <span class="citation" data-cites="iglewicz1993outliers">Iglewicz y Hoaglin (<a href="#ref-iglewicz1993outliers" role="doc-biblioref">1993</a>)</span> sustituye la media por la mediana y la desviación por el MAD —la mediana de las desviaciones absolutas respecto de la mediana—, con umbral <span class="math inline">\(3{,}5\)</span>: ninguno de los dos se deja arrastrar por unos pocos extremos. <span class="citation" data-cites="leys2013mad">Leys et&nbsp;al. (<a href="#ref-leys2013mad" role="doc-biblioref">2013</a>)</span> recomiendan también el MAD, con la mediana <span class="math inline">\(\pm\,2{,}5\cdot\)</span>MAD (reescalado) como umbral por defecto. Comparemos sobre el tempo de la rebanada:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>tempo <span class="op">=</span> musica.loc[musica[<span class="st">"tempo"</span>] <span class="op">&gt;</span> <span class="dv">0</span>, <span class="st">"tempo"</span>]  <span class="co"># 0 es imposible</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>q1, q3 <span class="op">=</span> tempo.quantile([<span class="fl">0.25</span>, <span class="fl">0.75</span>])</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>iqr <span class="op">=</span> q3 <span class="op">-</span> q1</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>vallas <span class="op">=</span> (q1 <span class="op">-</span> <span class="fl">1.5</span> <span class="op">*</span> iqr, q3 <span class="op">+</span> <span class="fl">1.5</span> <span class="op">*</span> iqr)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(vallas[<span class="dv">0</span>], <span class="dv">1</span>), <span class="bu">round</span>(vallas[<span class="dv">1</span>], <span class="dv">1</span>))</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 26.1 203.3</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>tukey <span class="op">=</span> (tempo <span class="op">&lt;</span> vallas[<span class="dv">0</span>]) <span class="op">|</span> (tempo <span class="op">&gt;</span> vallas[<span class="dv">1</span>])</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> (tempo <span class="op">-</span> tempo.mean()) <span class="op">/</span> tempo.std()   <span class="co"># clasico</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>mad <span class="op">=</span> (tempo <span class="op">-</span> tempo.median()).<span class="bu">abs</span>().median()</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>z_mod <span class="op">=</span> <span class="fl">0.6745</span> <span class="op">*</span> (tempo <span class="op">-</span> tempo.median()) <span class="op">/</span> mad</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>(tukey.<span class="bu">sum</span>()), <span class="bu">int</span>((z.<span class="bu">abs</span>() <span class="op">&gt;</span> <span class="dv">3</span>).<span class="bu">sum</span>()),</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>      <span class="bu">int</span>((z_mod.<span class="bu">abs</span>() <span class="op">&gt;</span> <span class="fl">3.5</span>).<span class="bu">sum</span>()))</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 33 4 0</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Sobre las 5 915 lecturas válidas, Tukey señala 33 candidatos (todos por encima de 203,3 —tempos vertiginosos— y ninguno por debajo de 26,1), el criterio <span class="math inline">\(\pm 3\sigma\)</span> solo 4, y la <span class="math inline">\(z\)</span> modificada exactamente 0: ni siquiera el más rápido, 214,0 pulsaciones por minuto, alcanza los <span class="math inline">\(3{,}5\)</span> MAD del umbral. El de <span class="citation" data-cites="leys2013mad">Leys et&nbsp;al. (<a href="#ref-leys2013mad" role="doc-biblioref">2013</a>)</span>, más laxo, marca 114. Cuatro criterios, cuatro respuestas: los umbrales no descubren atípicos, los <em>definen</em>. Del salto entre el 0 del criterio robusto estricto y los 114 del laxo nos ocuparemos en el capítulo&nbsp;11.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="Avanzado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Avanzado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Avanzado — Las constantes del MAD.</strong> El factor <span class="math inline">\(0{,}6745\)</span> y el «reescalado» de Leys son la misma idea: en datos normales el MAD vale <span class="math inline">\(0{,}6745\,\sigma\)</span>, y multiplicarlo por <span class="math inline">\(1/0{,}6745 = 1{,}4826\)</span> da un estimador robusto de <span class="math inline">\(\sigma\)</span>. El umbral <span class="math inline">\(3{,}5\)</span> de <span class="citation" data-cites="iglewicz1993outliers">Iglewicz y Hoaglin (<a href="#ref-iglewicz1993outliers" role="doc-biblioref">1993</a>)</span> equivale a marcar a <span class="math inline">\(\pm 5{,}19\)</span> MAD brutos; el de <span class="citation" data-cites="leys2013mad">Leys et&nbsp;al. (<a href="#ref-leys2013mad" role="doc-biblioref">2013</a>)</span>, a <span class="math inline">\(\pm 3{,}71\)</span>: por eso una marca 0 y la otra 114. Quien no documenta la constante no define su criterio.</p>
+</div>
+</div>
+<p>Queda decidir. Las opciones, de menos a más agresiva: <em>marcar</em> (una columna booleana de sospecha, sin tocar el dato), <em>investigar</em> (volver a la fuente: ¿avería, episodio real, errata?), winsorizar (<em>winsorizing</em>: sustituir cuanto excede el umbral por el propio umbral) y <em>eliminar</em>, reservado a los imposibles: nuestros 33 candidatos de Tukey están entre 203,3 y 214,0 pulsaciones por minuto, tempos posibles (metal veloz, <em>drum and bass</em>), y lo honesto es conservarlos marcados. El criterio estadístico propone; el dominio dispone.</p>
+<p>Cerremos uniendo los tres frentes —más los ausentes— en una cadena legible, resumen operativo de la sección, sobre un fragmento con un duplicado, una ausente y un imposible inyectados:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>bruto <span class="op">=</span> musica.head(<span class="dv">6</span>).copy().astype({<span class="st">"tempo"</span>: <span class="bu">object</span>})</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>bruto.loc[<span class="dv">2</span>, <span class="st">"tempo"</span>] <span class="op">=</span> <span class="va">None</span>               <span class="co"># una ausente</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>bruto.loc[<span class="dv">4</span>, <span class="st">"tempo"</span>] <span class="op">=</span> <span class="op">-</span><span class="fl">1.0</span>               <span class="co"># imposible</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>bruto <span class="op">=</span> pd.concat([bruto, bruto.iloc[[<span class="dv">0</span>]]],</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>                  ignore_index<span class="op">=</span><span class="va">True</span>)       <span class="co"># y un duplicado</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>limpio <span class="op">=</span> (</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    bruto.drop_duplicates(subset<span class="op">=</span>CLAVE)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>         .assign(tempo<span class="op">=</span><span class="kw">lambda</span> d: pd.to_numeric(d[<span class="st">"tempo"</span>],</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>                                               errors<span class="op">=</span><span class="st">"coerce"</span>))</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>         .dropna(subset<span class="op">=</span>[<span class="st">"tempo"</span>])</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>         .query(<span class="st">"0 &lt;= tempo &lt;= 250"</span>)       <span class="co"># rango plausible</span></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(bruto.shape, <span class="st">"-&gt;"</span>, limpio.shape)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co"># (7, 20) -&gt; (4, 20)</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Siete filas entran y cuatro salen: cayeron el duplicado, la ausente y el negativo, cada uno en su eslabón. La cadena se lee como una receta, pero cada paso condensa una decisión que esta sección ha hecho explícita: qué clave define un duplicado, qué se repara antes de coaccionar (comas decimales, erratas de categoría) y qué rango dicta el dominio. El <code>dropna</code> descarta aquí las ausentes porque el análisis necesita valores; contar cuántas pistas de un género tienen tempo exigiría conservarlas, como vimos con los ausentes. Limpiar no es aplicar la cadena: es poder defender cada uno de sus eslabones.</p>
+</section>
+</section>
+<section id="transformación-y-creación-de-variables" class="level2">
+<h2 class="anchored" data-anchor-id="transformación-y-creación-de-variables">Transformación y creación de variables</h2>
+<p>La limpieza deja los datos correctos; la transformación los deja útiles. Son operaciones distintas: limpiar corrige el dato sin cambiar lo que representa, mientras que transformar lo adapta a la <em>pregunta</em> que queremos hacerle —crear una variable nueva, agregar a otra escala temporal, discretizar un continuo, normalizar unidades—. Y aquí hay una lección que la práctica confirma una y otra vez: la ingeniería de variables (<em>feature engineering</em>) suele mejorar un análisis más que el algoritmo que se le aplique después <span class="citation" data-cites="kuhn2019feature">(<a href="#ref-kuhn2019feature" role="doc-biblioref">Kuhn y Johnson 2019</a>)</span>. Una variable que incorpora conocimiento del dominio —la banda de tempo, el tema enérgico frente al reposado, el género— vale más que un modelo sofisticado alimentado con variables pobres, porque el modelo solo puede explotar la información que las variables le acercan.</p>
+<section id="variables-con-dominio-dentro" class="level3">
+<h3 class="anchored" data-anchor-id="variables-con-dominio-dentro">Variables con dominio dentro</h3>
+<p>La rebanada trae rasgos continuos —el <code>tempo</code> en pulsaciones por minuto, la <code>energy</code> de 0 a 1— y dentro de ellos duermen variables que la pregunta «¿cómo suena cada género?» necesita despiertas. Con <code>pd.cut</code> para discretizar el tempo y un umbral de dominio sobre la energía, las creamos con nombre propio:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>completo <span class="op">=</span> musica.assign(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    energetica<span class="op">=</span><span class="kw">lambda</span> d: d[<span class="st">"energy"</span>] <span class="op">&gt;=</span> <span class="fl">0.5</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    banda<span class="op">=</span><span class="kw">lambda</span> d: pd.cut(</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>        d[<span class="st">"tempo"</span>], bins<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">90</span>, <span class="dv">120</span>, <span class="dv">150</span>, <span class="dv">300</span>],</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        labels<span class="op">=</span>[<span class="st">"balada"</span>, <span class="st">"medio"</span>, <span class="st">"movido"</span>, <span class="st">"rapido"</span>]),</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(completo[<span class="st">"banda"</span>].value_counts().to_string())</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># banda</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co"># medio     2256</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># movido    1521</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># balada    1142</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a><span class="co"># rapido     996</span></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>(completo[<span class="st">"energetica"</span>].<span class="bu">sum</span>()))</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 3692</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Las cuentas describen la rebanada: 3 692 de las 5 916 pistas son enérgicas (<code>energy</code> <span class="math inline">\(\ge\)</span> 0,5), y las bandas reparten el tempo en cuatro tramos, con el grueso —2 256 pistas— en el tramo <code>medio</code>, de 90 a 120 pulsaciones por minuto.</p>
+<p>Lo importante del listado no es la sintaxis sino los cortes. Los límites <code>[0, 90, 120, 150, 300]</code> no son redondos por pereza: agrupan el tempo en categorías musicales —<code>balada</code> por debajo de 90 pulsaciones por minuto, <code>medio</code> hasta 120, <code>movido</code> hasta 150 y <code>rapido</code> por encima—, las fronteras habituales entre una balada, un tema de baile y uno frenético. Se puede discrepar de estos cortes —y esa es exactamente la cuestión—: son una decisión de dominio sobre la música, y como toda decisión debe quedar escrita y justificada, no enterrada en un número mágico. Discretizar con cortes arbitrarios es fabricar una variable pobre con aspecto de variable rica.</p>
+<p>La segunda transformación clásica es agregar. La media por género condensa las cerca de mil pistas de cada uno en un solo valor con el <code>groupby</code> que estudiamos en la sección&nbsp;8.4:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>por_genero <span class="op">=</span> completo.groupby(<span class="st">"track_genre"</span>)[<span class="st">"energy"</span>].mean()</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(por_genero.<span class="bu">round</span>(<span class="dv">3</span>).to_string())</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># track_genre</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># classical    0.195</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co"># hip-hop      0.682</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># jazz         0.353</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># pop          0.606</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># reggaeton    0.739</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co"># rock         0.679</span></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(por_genero), <span class="bu">round</span>(completo[<span class="st">"energy"</span>].mean(), <span class="dv">3</span>))</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 6 0.546</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La media global de la energía, 0,546, y las seis medias por género son dos vistas del mismo dato: agregando no hemos inventado información, la hemos condensado. Pero obsérvese qué ha pasado con la estructura: <code>por_genero</code> tiene 6 filas y cada una ya no es una pista sino <em>un género</em>. La agregación cambia la unidad de observación, y eso redefine la tabla <em>tidy</em> de la sección&nbsp;10.2: «cada fila, una observación» solo significa algo cuando se declara qué es una observación. La tabla de pistas y la de géneros son ambas ordenadas, cada una respecto a su unidad; el error es mezclarlas en un mismo análisis como si fueran la misma cosa.</p>
+<p>Con las variables nuevas podemos por fin cruzar rasgos: ¿son más populares las pistas enérgicas?</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(completo.groupby(<span class="st">"energetica"</span>)[<span class="st">"popularity"</span>]</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>              .mean().<span class="bu">round</span>(<span class="dv">2</span>).to_string())</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># energetica</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="co"># False    18.69</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="co"># True     30.55</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Las medias difieren, y mucho: 30,55 frente a 18,69. Pero antes de contar una historia, cautela. En el catálogo completo la energía no predice la popularidad —su correlación es 0,001 <span class="citation" data-cites="spotifytracks">(<a href="#ref-spotifytracks" role="doc-biblioref"><span class="nocase">maharshipandya</span> 2022</a>)</span>, el éxito es social, no acústico—; la diferencia que vemos aquí la arrastra el género: las pistas enérgicas de esta rebanada son sobre todo pop y hip-hop, que además son las más populares, mientras que las reposadas son classical y jazz, de escasa popularidad. Es un factor de confusión (<em>confound</em>) de manual: la energía no causa la popularidad, comparte con ella una tercera variable. Separar una correlación real de una espuria —y decidir cuándo una diferencia de medias es señal— es, precisamente, la pregunta que aprenderemos a responder en el capítulo&nbsp;11.</p>
+<p>Dos apuntes para cerrar el catálogo. Primero, el escalado: muchas técnicas exigen variables comparables, y para eso se normaliza, sea restando la media y dividiendo por la desviación típica (la puntuación&nbsp;<span class="math inline">\(z\)</span>), sea llevando cada variable al intervalo <span class="math inline">\([0,1]\)</span> con su mínimo y su máximo (<em>min-max</em>). Son dos líneas de pandas y las practicaremos en el capítulo&nbsp;14, donde de verdad hacen falta; aquí solo conviene notar que, a diferencia de <code>energetica</code> o <code>banda</code>, el escalado <em>aprende</em> números de los datos, y eso tendrá consecuencias inmediatas. Segundo, el estilo: en todos los listados hemos encadenado <code>assign</code> —que devuelve una copia con las columnas nuevas, sin mutar la tabla original— de modo que cada transformación tiene nombre y el orden completo se lee de arriba abajo; para pasos que no caben en una expresión, <code>.pipe(funcion)</code> inserta funciones propias en la misma cadena <span class="citation" data-cites="mckinney2022python">(<a href="#ref-mckinney2022python" role="doc-biblioref">McKinney 2022</a>)</span>. Un guion así es documentación ejecutable: la receta de <code>completo</code> está entera en el código, no repartida entre celdas sueltas y memoria del analista.</p>
+</section>
+<section id="la-fuga-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="la-fuga-de-datos">La fuga de datos</h3>
+<p>Acabamos de separar las transformaciones en dos familias: las que aplican una regla fija (<code>energy &gt;= 0.5</code> es enérgica, un tempo de 100 es medio) y las que <em>aprenden</em> algo de los datos —la mediana con la que imputar, la media y la desviación con las que escalar, las categorías con las que codificar—. Sobre la segunda familia rige una disciplina que gobierna toda la preparación de datos cuando hay un modelo al final del camino: esos números deben aprenderse <em>solo del conjunto de entrenamiento</em>. Violarla es la fuga de datos (<em>data leakage</em>), y la formulación canónica de la regla es la separación entre aprender y predecir (<em>learn-predict separation</em>) de <span class="citation" data-cites="kaufman2012leakage">Kaufman et&nbsp;al. (<a href="#ref-kaufman2012leakage" role="doc-biblioref">2012</a>)</span>: el conjunto de test se reserva para simular los datos futuros que el modelo encontrará en producción, y cualquier número calculado mirándolo —aunque sea una humilde mediana— contamina esa simulación. El síntoma es traicionero porque es agradable: el modelo evaluado parece mejor de lo que es, y el desengaño llega en producción, donde el futuro de verdad no se deja mirar.</p>
+<p>La fuga no es una abstracción: son cifras distintas. Separemos las pistas de <code>pop</code> en un 80 % de entrenamiento y un 20 % de test, con semilla fija, y calculemos la mediana de energía que usaríamos para imputar sus ausencias de las dos maneras:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pop <span class="op">=</span> musica.query(<span class="st">"track_genre == 'pop'"</span>).copy()</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)   <span class="co"># el extractor falla en algunas</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>pop.loc[rng.random(<span class="bu">len</span>(pop)) <span class="op">&lt;</span> <span class="fl">0.03</span>, <span class="st">"energy"</span>] <span class="op">=</span> np.nan</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>train <span class="op">=</span> pop.sample(frac<span class="op">=</span><span class="fl">0.8</span>, random_state<span class="op">=</span><span class="dv">42</span>)  <span class="co"># 80 % para aprender</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> pop.drop(train.index)                   <span class="co"># el 20 % restante</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>mediana_fuga <span class="op">=</span> pop[<span class="st">"energy"</span>].median()  <span class="co"># mira </span><span class="al">TODO</span><span class="co">, tambien el test</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>mediana_ok <span class="op">=</span> train[<span class="st">"energy"</span>].median()  <span class="co"># mira solo el entrenamiento</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"con fuga:"</span>, <span class="bu">round</span>(mediana_fuga, <span class="dv">3</span>),</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">"| sin fuga:"</span>, <span class="bu">round</span>(mediana_ok, <span class="dv">3</span>))</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="co"># con fuga: 0.618 | sin fuga: 0.621</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>(train[<span class="st">"energy"</span>].isna().<span class="bu">sum</span>()))  <span class="co"># celdas que imputariamos</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 24</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Las medianas difieren: 0,618 con fuga frente a 0,621 sin ella. Si imputáramos antes de separar, las 24 ausencias del entrenamiento recibirían un valor calculado en parte sobre el test: el modelo se entrenaría, literalmente, con información del examen. La brecha aquí es minúscula —la rebanada es homogénea y los huecos, pocos—; pero la magnitud de la brecha no es el argumento. Con un test que representa pistas futuras aún no publicadas, o con muchos más ausentes, la diferencia entre lo aprendido con todo y lo aprendido con el entrenamiento crece, y con ella el optimismo fantasma de la evaluación. La regla no se negocia por pequeña que sea la cifra: se calcula sobre <code>train</code> (aquí, <code>mediana_ok</code>) y se aplica con <code>fillna</code> a ambos lados, exactamente como dibuja la figura&nbsp;10.4.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/cap10/fig_04.svg" class="img-fluid figure-img"></p>
+<figcaption><strong>Figura&nbsp;10.4.</strong> <strong>La separación aprender-predecir.</strong> La separación aprender-predecir <span class="citation" data-cites="kaufman2012leakage">(<a href="#ref-kaufman2012leakage" role="doc-biblioref">Kaufman et&nbsp;al. 2012</a>)</span>: toda transformación que aprende números de los datos los aprende solo del conjunto de entrenamiento y, ya congelada, se aplica a ambos lados de la frontera. Si el cálculo cruza la línea discontinua, la evaluación deja de simular el futuro.</figcaption>
+</figure>
+</div>
+<p>La comunidad de scikit-learn ha destilado esta disciplina en su página de buenas prácticas «Common pitfalls and recommended practices» <span class="citation" data-cites="sklearnpitfalls">(<a href="#ref-sklearnpitfalls" role="doc-biblioref"><span class="nocase">scikit-learn developers</span> 2026</a>)</span>: los métodos <code>fit</code> y <code>fit_transform</code> de un transformador se invocan únicamente sobre el entrenamiento, y sobre el test solo se aplica <code>transform</code>; y para que el orden correcto no dependa de la memoria del analista, el <em>pipeline</em> lo garantiza mecánicamente, encapsulando transformaciones y modelo en un objeto que ya no puede equivocarse de lado. Trabajaremos así en los capítulos&nbsp;13 y&nbsp;14; lo que importa retener desde ya es que la garantía puede ser estructural, no un acto de voluntad repetido.</p>
+<p>La mediana fugada es solo la variante más sutil de la especie. Otras fugas típicas: la variable que codifica el futuro, como usar la popularidad —que sigue creciendo con cada escucha posterior— como rasgo para predecir algo fijado en el lanzamiento, o cualquier columna escrita con posterioridad al hecho que se quiere predecir; y los duplicados de la sección&nbsp;10.5.1 repartidos entre entrenamiento y test, que permiten al modelo aprobar el examen recordando en vez de generalizar —otra razón, y no menor, para deduplicar antes de repartir. Común a todas: el error no avisa, se descubre midiendo con honestidad dónde puede mirar cada número. Esa contabilidad de procedencias —qué sabe cada cifra, de dónde lo sabe y si tenía derecho a saberlo— es ya la antesala de la política de datos que formaliza la sección siguiente.</p>
+</section>
+</section>
+<section id="la-política-de-datos-medir-no-proclamar" class="level2">
+<h2 class="anchored" data-anchor-id="la-política-de-datos-medir-no-proclamar">La política de datos: medir, no proclamar</h2>
+<p>El cap.&nbsp;1 dejó una promesa impresa. Su anticipo de las tres clases de dato (§1.1.5) y la tabla&nbsp;1.5 que lo resumía remitían a este capítulo para su desarrollo, y este es el momento de saldarla. Todo cuanto hemos hecho hasta aquí —el contrato que valida, la limpieza que repara, la transformación que deriva— tiene un mismo propósito final: producir números en los que se pueda confiar. Falta la última pieza, que ya no es técnica sino metodológica: qué hace falta para <em>sostener</em> un número delante de un lector.</p>
+<p>La respuesta cabe en un principio: <strong>toda afirmación cuantitativa tiene una procedencia conocida y declarada</strong>. Ante cualquier cifra —en un informe, en el pie de una figura, en un comentario de código— quien lee debe poder saber de dónde sale y qué haría falta para regenerarla. Un número sin procedencia no es un dato: es una proclama. De ahí el lema que da título a la sección, medir en lugar de proclamar; y de ahí la disciplina que lo vuelve operativo: todo número pertenece a una de tres clases, y la clase se hace visible.</p>
+<section id="clase-1-la-medición-local-reproducible." class="level5">
+<h5 class="anchored" data-anchor-id="clase-1-la-medición-local-reproducible.">Clase 1: la medición local reproducible.</h5>
+<p>Es el número que calculó nuestro propio código: datos al alcance de cualquiera, semilla fija, resultado determinista. El ejemplo es este mismo libro. Las cifras de música que venimos imprimiendo desde el cap.&nbsp;5 —las 113 999 pistas del catálogo, las 5 916 de la rebanada de seis géneros, las 25 filas imposibles que este capítulo descartó— no se teclearon jamás a mano: cada una es la salida de ejecutar un <em>script</em> con semilla fija, y todas se cotejan contra un solo lugar donde viven —el registro único que la tabla&nbsp;1.5 anunciaba—. La consecuencia práctica es la que importa: el número del texto, el de la figura y el del código son el mismo <em>por construcción</em>, no por vigilancia. Es la traducción directa de dos de las diez reglas que el cap.&nbsp;1 presentó <span class="citation" data-cites="sandve2013ten">(<a href="#ref-sandve2013ten" role="doc-biblioref">Sandve et&nbsp;al. 2013</a>)</span> —evitar los pasos manuales y conectar cada afirmación del texto con el resultado que la sostiene— y del consejo central de <span class="citation" data-cites="wilson2017good">Wilson et&nbsp;al. (<a href="#ref-wilson2017good" role="doc-biblioref">2017</a>)</span>: que cada resultado se regenere con un comando, sin intervención humana entre el dato y la cifra.</p>
+</section>
+<section id="clase-2-el-sintético-declarado." class="level5">
+<h5 class="anchored" data-anchor-id="clase-2-el-sintético-declarado.">Clase 2: el sintético declarado.</h5>
+<p>Es el dato fabricado a propósito, cuando lo que se enseña exige control. El fichero sucio de este capítulo es el ejemplo canónico: sobre el catálogo real —dato medido— inyectamos con semilla 42 unos defectos —comas decimales, tempos imposibles, erratas de género, duplicados— cuya identidad conocíamos de antemano, y el texto lo declaró en el mismo párrafo en que lo presentó. Un sintético es legítimo exactamente mientras está declarado, porque enseña un mecanismo: controlamos dónde están los fallos que el mecanismo debe encontrar. Este capítulo acaba de explotarlo: sabíamos que habíamos sembrado treinta comas decimales y veinticinco duplicados, y por eso pudimos comprobar que el contrato los encontraba <em>todos</em>, no «muchos». Y se convierte en trampa en el instante en que se disfraza de medición. Nótese, de paso, que las clases califican afirmaciones, no ficheros: «el fichero sucio trae 25 duplicados» es una medición reproducible (clase&nbsp;1) sobre un artefacto sintético declarado (clase&nbsp;2), y ambas etiquetas conviven y se declaran; lo que esa cifra no puede sostener es una afirmación sobre el catálogo real, que no los trae.</p>
+</section>
+<section id="clase-3-el-citado-de-la-literatura." class="level5">
+<h5 class="anchored" data-anchor-id="clase-3-el-citado-de-la-literatura.">Clase 3: el citado de la literatura.</h5>
+<p>Es el hecho que no se puede —o no se debe— establecer midiendo en local: la fecha en que un proyecto entró en una fundación, la versión que eliminó un parámetro, el resultado de un <em>benchmark</em> ajeno, una regularidad medida a una escala que no está a nuestro alcance. Los caps.&nbsp;8 y&nbsp;9 estuvieron sembrados de ellos —qué versión de pandas adoptó tal defecto, desde cuándo existe tal motor— y todos llevaron su cita en prosa (<code>\parencite</code>), o su procedencia al pie cuando eran tabla o figura redibujada. La regla dura de esta clase es negativa: una cifra de la literatura <strong>jamás entra en el registro de mediciones</strong>, que es solo para lo que nuestro código reprodujo. Mezclar el dato citado con el medido, sin etiqueta, es el fallo más grave que contempla esta política, porque no produce un error visible: produce un documento que miente con números verdaderos.</p>
+<p>La tabla&nbsp;10.1 fija las tres clases con un ejemplo real de este libro en cada fila; es la versión desarrollada del anticipo del cap.&nbsp;1.</p>
+<table class="caption-top table">
+<caption><strong>Las tres clases de dato, formalizadas.</strong> Las tres clases de dato, con su tratamiento y un ejemplo real de este libro. Desarrolla el anticipo de la tabla&nbsp;1.5.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Clase</th>
+<th style="text-align: left;">Qué es</th>
+<th style="text-align: left;">Cómo se declara</th>
+<th style="text-align: left;">Ejemplo en este libro</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">1. Medida</td>
+<td style="text-align: left;">la calculó nuestro código: semilla fija, resultado determinista</td>
+<td style="text-align: left;">registro único; nunca tecleada a mano</td>
+<td style="text-align: left;">las 113 999 pistas; las 5 916 de la rebanada</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">. Sintética</td>
+<td style="text-align: left;">generada a propósito para ilustrar un mecanismo</td>
+<td style="text-align: left;">marcada como sintética en código y prosa</td>
+<td style="text-align: left;">el fichero sucio de este capítulo (semilla 42)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">. Citada</td>
+<td style="text-align: left;">tomada de la literatura o de una fuente externa</td>
+<td style="text-align: left;">cita en prosa; tabla o figura redibujada con procedencia</td>
+<td style="text-align: left;">versiones y fechas de pandas, Arrow y polars</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;"></td>
+<td style="text-align: left;">(caps.&nbsp;8–9)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="el-deslinde-cuando-lo-local-diverge-de-la-literatura." class="level5">
+<h5 class="anchored" data-anchor-id="el-deslinde-cuando-lo-local-diverge-de-la-literatura.">El deslinde: cuando lo local diverge de la literatura.</h5>
+<p>Tarde o temprano una medición propia no coincidirá con lo publicado. La regla para ese momento se llama <em>deslinde</em> y tiene tres tiempos, siempre los tres. Primero, el dato local, presentado como local, con su referencia al registro. Segundo, el porqué de la divergencia: el régimen, la escala o el factor de confusión (<em>confound</em>) concretos, con nombre y apellidos; «me sale distinto» no es un porqué. Tercero, el dato contrastado de la fuente, tratado como clase&nbsp;3. El orden importa menos que la completitud: omitir el tiempo que incomoda —callar el dato local que no replica, o callar el de la fuente que lo desmiente— es la forma más educada de mentir.</p>
+<p>A la regla la acompaña una cautela: la mayoría de las divergencias no son contradicciones, sino diferencias de régimen, y se nombran así —«en este régimen local, X; a escala, la fuente mide Y, porque Z»—, reservando «contradice» para la tensión genuina. Los cocientes de rendimiento de los caps.&nbsp;8 y&nbsp;9 fueron el ejemplo practicado de este deslinde: cada cociente se dio «en nuestra máquina», sobre nuestros datos y nuestras versiones (§9.7), mientras que los factores de los <em>benchmarks</em> públicos se trataron como lo que son, cifras citadas con fuente, versión y condiciones (§9.6). Aquella advertencia impresa del cap.&nbsp;9 —el factor exacto se cita o se mide, «como exigirá la política de datos»— era un pagaré contra esta sección, y aquí queda fundada: un <em>benchmark</em> ajeno y nuestro cociente local pueden diferir en un múltiplo entero sin que ninguno esté mal, porque miden regímenes distintos —otros tamaños, otro hardware, otras versiones—, y la política no pide elegir uno, sino presentar los dos con su etiqueta.</p>
+</section>
+<section id="reproducir-el-dato-no-la-expresión." class="level5">
+<h5 class="anchored" data-anchor-id="reproducir-el-dato-no-la-expresión.">Reproducir el dato, no la expresión.</h5>
+<p>Queda el punto operativo: cómo se trae físicamente un dato ajeno a un documento propio. Una regla lo unifica todo: se reproduce el <em>dato</em> —los hechos, que no pertenecen al autor del artículo—, no la <em>expresión</em> —la imagen o la maqueta concretas, que sí—. Un número suelto va en prosa con su cita, y basta. Una tabla ajena se <em>reconstruye</em> en el formato del propio documento, con «Fuente:» y la cita en el pie, y trayendo solo las filas y columnas que hacen al caso. Una gráfica ajena se <em>redibuja</em> en el sistema de figuras propio, con «Datos:» y la cita en el pie, a partir de los valores que la fuente publica. Lo que nunca se hace es pegar una captura del original: por derechos de autor y por coherencia —una captura no se adapta a la tipografía, envejece mal y delata que nadie procesó el dato—. En todos los casos rige la proporción: se trae la cifra justa que hace honesto el contraste, normalmente una o dos; una tabla o una curva completas, solo cuando la <em>forma</em> del resultado ajeno es precisamente lo que se quiere enseñar.</p>
+</section>
+<section id="la-verificación." class="level5">
+<h5 class="anchored" data-anchor-id="la-verificación.">La verificación.</h5>
+<p>Una política que no se comprueba es una declaración de intenciones. La comprobación descansa en cuatro hábitos, todos practicables ya con lo aprendido en este libro:</p>
+<ul>
+<li><p><strong>Predicción declarada, con lado falsable.</strong> Antes de medir se escribe qué se espera y qué resultado refutaría la expectativa; después se emite un veredicto de tres vías: confirma, refuta o no concluyente. Una lectura de un solo sentido, a la que cualquier resultado «apoya», no es una medición: es una tesis buscando compañía. El cap.&nbsp;11 desarrollará la versión estadística de esta disciplina, con el contraste de hipótesis y sus trampas.</p></li>
+<li><p><strong>Determinismo.</strong> Semilla fija y dos ejecuciones que cuadran, bit a bit. Si el resultado cambia entre ejecuciones, antes de comunicarlo hay que poder decir por qué.</p></li>
+<li><p><strong>Relojes por forma u orden, no por valor.</strong> Como establecimos en el cap.&nbsp;1 y practicamos al cerrar el cap.&nbsp;4 (§4.9.4), un tiempo absoluto depende de la máquina y de su carga; lo que se comunica es el cociente o el orden de magnitud, que sobreviven al cambio de hardware.</p></li>
+<li><p><strong>Verificar contra el artefacto, no contra el parte.</strong> La comprobación final se hace sobre la cosa —el fichero, el documento, la figura—, no sobre un informe de estado. Un «ya está aplicado» no es una verificación; abrir el fichero y leerlo, sí. Los partes se equivocan con mucha más soltura que los artefactos.</p></li>
+</ul>
+<p>Hay un corolario que merece párrafo propio, porque señala el fallo de rigor más silencioso del oficio: <strong>el comentario que anuncia una salida es una afirmación medible</strong>. Un <code># 0.62</code> junto a una línea de código, un docstring que promete «devuelve la mediana de energía del pop», afirman un hecho, y los hechos se verifican ejecutando, nunca se asumen: el código puede correr perfectamente y el comentario mentir igual, porque nada en el intérprete los mantiene sincronizados. Es, dicho con todas las letras, la política que este libro se aplica a sí mismo: cada salida que aparece como comentario en un listado —las de este capítulo incluidas— se obtuvo ejecutando el código sobre el <em>dataset</em> del capítulo, y volvería a obtenerse idéntica, porque la semilla está fija.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="Avanzado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Avanzado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Avanzado — El gate de integridad.</strong> La política entera puede comprobarse de forma mecánica, y ese es quizá su rasgo más valioso. Bastan cuatro condiciones: (a) todo número medido resuelve contra el registro único; (b) toda cita resuelve contra la bibliografía; (c) ninguna cifra de la literatura vive en el registro de mediciones; y (d) ninguna figura de dato ajeno carece de su «Datos:» con la cita. Las cuatro son verificables por un programa sin juicio humano —buscar, cruzar, contar—, y un <em>script</em> que las verifica convierte la honestidad en un test que pasa o falla: la diferencia entre el rigor declarado y el rigor comprobado. La idea no es nuestra: mecaniza una tradición que pide sustituir pasos manuales por <em>scripts</em> y conectar cada afirmación con el cómputo que la produce <span class="citation" data-cites="sandve2013ten peng2011reproducible stodden2014best">(<a href="#ref-sandve2013ten" role="doc-biblioref">Sandve et&nbsp;al. 2013</a>; <a href="#ref-peng2011reproducible" role="doc-biblioref">Peng 2011</a>; <a href="#ref-stodden2014best" role="doc-biblioref">Stodden y Miguez 2014</a>)</span>, y cuya urgencia documentó la encuesta de <span class="citation" data-cites="baker2016reproducibility">Baker (<a href="#ref-baker2016reproducibility" role="doc-biblioref">2016</a>)</span> sobre la crisis de replicación, en la que la mayoría de los investigadores reconocía haber fracasado al intentar reproducir experimentos ajenos, y a menudo los propios. En el lenguaje de los principios FAIR <span class="citation" data-cites="wilkinson2016fair">(<a href="#ref-wilkinson2016fair" role="doc-biblioref"><span class="nocase">Wilkinson et&nbsp;al.</span> 2016</a>)</span> que el cap.&nbsp;1 presentó, la procedencia declarada es justo lo que vuelve un dato reutilizable por alguien que no estuvo allí. Y cuando el cap.&nbsp;16 monte la batería de pruebas automatizadas del proyecto, el gate encontrará su sitio natural: un test más, que corre en cada compilación.</p>
+</div>
+</div>
+<p>Con esto, la promesa del cap.&nbsp;1 queda cumplida: las tres clases ya no son un anticipo, sino una disciplina practicable, con sus reglas de frontera —el deslinde— y su comprobación mecánica —el gate—. No es un apéndice ético del análisis de datos: es su columna vertebral. Un contrato de esquema protege la forma de los datos; la política de datos protege la forma de lo que afirmamos sobre ellos. El resto del libro se apoyará en ella cada vez que imprima una cifra: la estadística del cap.&nbsp;11 enseñará a decir cuánto puede afirmar un número, y la ingeniería del cap.&nbsp;16 automatizará su vigilancia.</p>
+</section>
+</section>
+<section id="un-ejemplo-integrador-del-fichero-sucio-al-dato-de-confianza" class="level2">
+<h2 class="anchored" data-anchor-id="un-ejemplo-integrador-del-fichero-sucio-al-dato-de-confianza">Un ejemplo integrador: del fichero sucio al dato de confianza</h2>
+<p>Cerramos como los capítulos vecinos: con un ejemplo que recorre de principio a fin lo aprendido. El integrador del cap.&nbsp;5 (§5.10) construyó el catálogo y lo sometió a una validación mínima escrita a mano; el del cap.&nbsp;8 (§8.7) lo agregó y pivotó. Ahora esa misma rebanada va a atravesar el ciclo completo de este capítulo —tipos, contrato, limpieza, revalidación y transformación— desde un fichero que concentra los males típicos de un CSV real: partida sucia a conciencia, llegada un <code>DataFrame</code> en el que se puede confiar.</p>
+<p>Necesitamos un fichero sucio, y lo vamos a fabricar nosotros. Que no se nos escape la ironía: tras un capítulo predicando la declaración del origen de cada dato, esta suciedad es un dato sintético de Clase&nbsp;2, y lo decimos con la política de §10.7 recién aprendida. Partimos de la rebanada limpia del catálogo (<code>data/processed/ musica.parquet</code>, seis géneros deduplicados: 5 916 pistas) y la ensuciamos con semilla fija e índices disjuntos. Ensuciar en vez de descargar tiene una ventaja metodológica: conocemos la verdad de antemano y podremos verificar la limpieza contra ella. Es un lujo que el mundo real no concede, y precisamente por eso importa el método: cada comprobación que sigue es mecánica y funcionaría igual sin conocer la respuesta.</p>
+<p>El generador marca primero ausentes las lecturas sin pulso claro —el tempo de 0 que ya traía el catálogo, más un 2 % que simulamos— y aplica luego cinco plagas clásicas sobre índices que no se pisan entre sí: 30 tempos con coma decimal (<code>"143,791"</code>), 15 negativos imposibles (<span class="math inline">\(-1{,}0\)</span>), 10 centinelas <code>9999.0</code>, 20 erratas de género («regeton», sin una de sus ges) y 25 filas duplicadas. En resumen (el código completo acompaña al capítulo en <code>src/cap10_limpieza.py</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>GENEROS <span class="op">=</span> [<span class="st">"classical"</span>, <span class="st">"hip-hop"</span>, <span class="st">"jazz"</span>, <span class="st">"pop"</span>, <span class="st">"reggaeton"</span>, <span class="st">"rock"</span>]</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> (pd.read_parquet(<span class="st">"data/processed/musica.parquet"</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>      .query(<span class="st">"track_genre in @GENEROS"</span>)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>      .drop_duplicates(subset<span class="op">=</span>[<span class="st">"track_id"</span>, <span class="st">"track_genre"</span>])</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>      .reset_index(drop<span class="op">=</span><span class="va">True</span>))</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>tempo <span class="op">=</span> df[<span class="st">"tempo"</span>].astype(<span class="st">"float64"</span>).replace(<span class="fl">0.0</span>, np.nan).to_numpy()</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>tempo[rng.random(<span class="bu">len</span>(df)) <span class="op">&lt;</span> <span class="fl">0.02</span>] <span class="op">=</span> np.nan  <span class="co"># lecturas sin pulso</span></span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"tempo"</span>] <span class="op">=</span> tempo</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">42</span>)             <span class="co"># ensuciar: su semilla</span></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>idx <span class="op">=</span> rng.permutation(df.index[df[<span class="st">"tempo"</span>].notna()])</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>coma, neg <span class="op">=</span> idx[:<span class="dv">30</span>], idx[<span class="dv">30</span>:<span class="dv">45</span>]</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>cent, dup <span class="op">=</span> idx[<span class="dv">45</span>:<span class="dv">55</span>], idx[<span class="dv">55</span>:<span class="dv">80</span>]</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>regg <span class="op">=</span> [i <span class="cf">for</span> i <span class="kw">in</span> idx[<span class="dv">80</span>:]</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> df.at[i, <span class="st">"track_genre"</span>] <span class="op">==</span> <span class="st">"reggaeton"</span>][:<span class="dv">20</span>]</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"tempo"</span>] <span class="op">=</span> df[<span class="st">"tempo"</span>].astype(<span class="bu">object</span>)</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>df.loc[coma, <span class="st">"tempo"</span>] <span class="op">=</span> [<span class="bu">str</span>(v).replace(<span class="st">"."</span>, <span class="st">","</span>)</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>                         <span class="cf">for</span> v <span class="kw">in</span> df.loc[coma, <span class="st">"tempo"</span>]]</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>df.loc[neg, <span class="st">"tempo"</span>] <span class="op">=</span> <span class="op">-</span><span class="fl">1.0</span>          <span class="co"># bpm imposible</span></span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>df.loc[cent, <span class="st">"tempo"</span>] <span class="op">=</span> <span class="fl">9999.0</span>       <span class="co"># centinelas</span></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>df.loc[regg, <span class="st">"track_genre"</span>] <span class="op">=</span> <span class="st">"regeton"</span>  <span class="co"># errata: falta una g</span></span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.concat([df, df.loc[dup]], ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>df.to_csv(<span class="st">"data/raw/musica_sucia.csv"</span>, sep<span class="op">=</span><span class="st">";"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>El punto y coma es el separador de tantos ficheros europeos <span class="citation" data-cites="spotifytracks">(<a href="#ref-spotifytracks" role="doc-biblioref"><span class="nocase">maharshipandya</span> 2022</a>)</span>. A partir de aquí olvidamos cómo se fabricó y lo tratamos como lo que aparenta ser: un CSV recién descargado.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>sucio <span class="op">=</span> pd.read_csv(<span class="st">"data/raw/musica_sucia.csv"</span>, sep<span class="op">=</span><span class="st">";"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sucio.shape)                        <span class="co"># (5941, 20)</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sucio[[<span class="st">"track_genre"</span>, <span class="st">"popularity"</span>, <span class="st">"tempo"</span>]].dtypes)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># track_genre    object</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="co"># popularity      int64</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="co"># tempo          object</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="co"># dtype: object</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Las 5 941 filas ya delatan un exceso (esperábamos 5 916) y los tipos dan la primera alarma: <code>tempo</code> llega como <code>object</code>. Primero, los tipos: basta una celda no numérica para que <code>read_csv</code> degrade la columna entera. Antes de tocar nada, medimos; <code>to_numeric</code> con <code>errors="coerce"</code>, usado como detector, señala qué celdas no son números:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>como_num <span class="op">=</span> pd.to_numeric(sucio[<span class="st">"tempo"</span>], errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>sospechosos <span class="op">=</span> como_num.isna() <span class="op">&amp;</span> sucio[<span class="st">"tempo"</span>].notna()</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>(sospechosos.<span class="bu">sum</span>()))             <span class="co"># 30</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sucio.loc[sospechosos, <span class="st">"tempo"</span>].head(<span class="dv">3</span>).tolist())</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># ['143,791', '114,487', '129,37']</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Treinta celdas, y la inspección revela el patrón: comas decimales. No es un valor corrupto que haya que tirar, sino una convención de escritura que hay que traducir; se repara con <code>str.replace</code> y se reconvierte:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>sucio[<span class="st">"tempo"</span>] <span class="op">=</span> pd.to_numeric(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    sucio[<span class="st">"tempo"</span>].<span class="bu">str</span>.replace(<span class="st">","</span>, <span class="st">"."</span>, regex<span class="op">=</span><span class="va">False</span>),</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    errors<span class="op">=</span><span class="st">"coerce"</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>(sucio[<span class="st">"tempo"</span>].isna().<span class="bu">sum</span>()))   <span class="co"># 105</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La cifra es elocuente: 105 ausentes, exactamente las lecturas sin tempo que ya traía la rebanada; la reparación no perdió ni un valor. Y la lección de fondo: hasta que los tipos no están bien, el contrato de valores ni siquiera puede evaluarse —sobre una columna <code>object</code> no hay rango, ni media, ni comparación que valgan.</p>
+<p>Segundo, el contrato. Recuperamos el esquema de §10.3.1, con su clave natural. Una pista queda identificada por su <code>track_id</code> y su género, y el argumento <code>unique</code> convierte esa afirmación en cláusula verificable <span class="citation" data-cites="panderadocs">(<a href="#ref-panderadocs" role="doc-biblioref"><span class="nocase">pandera developers</span> 2026</a>)</span>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandera.pandas <span class="im">as</span> pa</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>ESQUEMA <span class="op">=</span> pa.DataFrameSchema(</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    {</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"track_genre"</span>: pa.Column(<span class="bu">str</span>,</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>                                 pa.Check.isin(GENEROS)),</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"popularity"</span>: pa.Column(<span class="bu">int</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>                                pa.Check.in_range(<span class="dv">0</span>, <span class="dv">100</span>)),</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"tempo"</span>: pa.Column(<span class="bu">float</span>,</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>                           pa.Check.in_range(<span class="fl">0.0</span>, <span class="fl">250.0</span>),</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>                           nullable<span class="op">=</span><span class="va">True</span>),</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    unique<span class="op">=</span>[<span class="st">"track_id"</span>, <span class="st">"track_genre"</span>],</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Validamos con <code>lazy=True</code> para recibir el parte completo de una sola vez:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    ESQUEMA.validate(sucio, lazy<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> pa.errors.SchemaErrors <span class="im">as</span> err:</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    parte <span class="op">=</span> err.failure_cases</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="bu">len</span>(parte))                     <span class="co"># 145</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(parte[<span class="st">"check"</span>].value_counts().to_string())</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># check</span></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># multiple_fields_uniqueness    100</span></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># in_range(0.0, 250.0)           25</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># isin([...GENEROS])             20</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>El parte cuadra con la suciedad inyectada, pero hay que saber leerlo. Las 25 violaciones de <code>in_range</code> son los 15 negativos más los 10 centinelas (9999,0 cae fuera del rango plausible: justo por eso vetamos los centinelas numéricos). Las 20 de <code>isin</code> son las erratas «regeton». ¿Y los 100 casos de <code>multiple_ fields_uniqueness</code>? Corresponden a solo 25 filas duplicadas: cada duplicado implica a dos filas —la original y su copia violan juntas la unicidad— y el parte anota un caso por cada una de las dos columnas de la clave: <span class="math inline">\(25 \times 2 \times 2 = 100\)</span>. El parte cuenta <em>síntomas</em>, no filas; el contraste directo lo da pandas:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>clave <span class="op">=</span> [<span class="st">"track_id"</span>, <span class="st">"track_genre"</span>]</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>(sucio.duplicated(subset<span class="op">=</span>clave).<span class="bu">sum</span>()))    <span class="co"># 25</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Tercero, limpiar con criterio. Con el diagnóstico completo, cada defecto recibe el tratamiento que merece, y no otro: se <em>repara</em> lo que tiene interpretación inequívoca (las erratas «regeton» son reggaeton con toda evidencia, igual que las comas eran puntos), se <em>deduplica</em> por la clave natural y se <em>descarta</em> únicamente lo imposible, que no admite reparación honesta:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>limpio <span class="op">=</span> (</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>    sucio</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    .assign(track_genre<span class="op">=</span><span class="kw">lambda</span> d:</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>            d[<span class="st">"track_genre"</span>].replace({<span class="st">"regeton"</span>: <span class="st">"reggaeton"</span>}))</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    .drop_duplicates(subset<span class="op">=</span>clave)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    .query(<span class="st">"tempo.isna() or (0 &lt;= tempo &lt;= 250"</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>           <span class="st">" and tempo != 9999.0)"</span>)</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(limpio.shape)                       <span class="co"># (5891, 20)</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La cláusula <code>tempo != 9999.0</code> es redundante —el rango ya excluye al centinela—, pero la escribimos igualmente: el código de limpieza también declara intenciones, y quien lo lea debe ver que el centinela se descartó a sabiendas. Nótese el <code>tempo.isna() or</code>: los ausentes atraviesan el filtro intactos. Quedan <span class="math inline">\(5\,891 =
+5\,916 - 25\)</span> filas: frente al original solo han caído los 25 valores imposibles. El balance completo, decisión a decisión:</p>
+<ul>
+<li><p><strong>Reparadas 50</strong>: 30 comas decimales y 20 erratas de género; valores recuperados, no perdidos.</p></li>
+<li><p><strong>Deduplicadas 25</strong>: filas repetidas eliminadas por la clave natural.</p></li>
+<li><p><strong>Descartadas 25</strong>: 15 negativos y 10 centinelas, lo único sin reparación posible.</p></li>
+<li><p><strong>Conservadas 105</strong>: las lecturas sin tempo siguen como ausentes, sin imputar (§10.4.2): imputar aquí sería decidir por el análisis antes de conocer la pregunta.</p></li>
+</ul>
+<p>Y la prueba del algodón: el mismo contrato que suspendió al fichero sucio debe aprobar al limpio.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>valido <span class="op">=</span> ESQUEMA.validate(limpio, lazy<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(valido.shape)                       <span class="co"># (5891, 20)</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>(limpio[<span class="st">"tempo"</span>].isna().<span class="bu">sum</span>()))  <span class="co"># 105</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cuarto y último, transformar. Solo ahora, con el contrato en verde, tiene sentido derivar variables. La media de energía por género es la primera comprobación con memoria, porque el libro ya conoce la respuesta:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>por_genero <span class="op">=</span> limpio.groupby(<span class="st">"track_genre"</span>)[<span class="st">"energy"</span>].mean()</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">len</span>(por_genero))                    <span class="co"># 6</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(por_genero.<span class="bu">round</span>(<span class="dv">3</span>).head(<span class="dv">3</span>).to_string())</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># track_genre</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="co"># classical    0.196</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="co"># hip-hop      0.683</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co"># jazz         0.353</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(limpio[<span class="st">"energy"</span>].mean(), <span class="dv">3</span>))  <span class="co"># 0.546</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Seis géneros y una energía media de 0,546: el mismo perfil que obtuvimos sobre la rebanada limpia del cap.&nbsp;5. El dato limpio recupera la verdad conocida, y esa coincidencia <em>es</em> la validación final del ciclo: la conocíamos porque nosotros sembramos la suciedad, pero el camino hasta ella —tipos, contrato, reparación, revalidación— no la usó ni una sola vez. Rematamos derivando las variables que pedirá el análisis, banda de tempo y booleano de energía:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>completo <span class="op">=</span> limpio.assign(</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>    energetica<span class="op">=</span><span class="kw">lambda</span> d: d[<span class="st">"energy"</span>] <span class="op">&gt;=</span> <span class="fl">0.5</span>,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    banda<span class="op">=</span><span class="kw">lambda</span> d: pd.cut(</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>        d[<span class="st">"tempo"</span>], bins<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">90</span>, <span class="dv">120</span>, <span class="dv">150</span>, <span class="dv">300</span>],</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>        labels<span class="op">=</span>[<span class="st">"balada"</span>, <span class="st">"medio"</span>, <span class="st">"movido"</span>, <span class="st">"rapido"</span>]),</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>((completo[<span class="st">"banda"</span>] <span class="op">==</span> <span class="st">"movido"</span>).<span class="bu">sum</span>()))      <span class="co"># 1496</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">int</span>(completo[<span class="st">"energetica"</span>].<span class="bu">sum</span>()))               <span class="co"># 3674</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Las 1 496 pistas de la banda <code>movido</code> y las 3 674 pistas enérgicas quedan listas para preguntas que aún no hemos formulado: ¿son más bailables los temas movidos?, ¿distingue el género la energía de una pista?</p>
+<p>El ciclo se ha cerrado. Un fichero con comas decimales, centinelas, negativos, erratas y duplicados ha pasado por tipos <span class="math inline">\(\to\)</span> contrato <span class="math inline">\(\to\)</span> limpieza <span class="math inline">\(\to\)</span> revalidación <span class="math inline">\(\to\)</span> transformación, y en cada parada la decisión quedó escrita: qué se reparó, qué se descartó y por qué, y qué se dejó ausente a propósito. Esa es la política de §10.7 en acción: medir en lugar de proclamar y verificar contra el artefacto. La recompensa es un <code>DataFrame</code> que ya no exige fe, sino que exhibe su contrato. Y con datos en los que por fin se puede confiar, toca preguntarles qué dicen: ese es el terreno de la estadística, y lo pisaremos en el cap.&nbsp;11.</p>
+</section>
+<section id="lecturas-recomendadas" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="lecturas-recomendadas">Lecturas recomendadas</h2>
+<ul>
+<li><p><span class="citation" data-cites="wilkinson2016tidy">Wickham (<a href="#ref-wilkinson2016tidy" role="doc-biblioref">2014</a>)</span> es el artículo que dio nombre y forma al marco de la §10.2: cada variable una columna, cada observación una fila, cada tabla una clase de unidad observacional. Breve, legible y lleno de ejemplos de datos desordenados que reconocerá al instante; el vocabulario de este capítulo sale de ahí.</p></li>
+<li><p><span class="citation" data-cites="panderadocs"><span class="nocase">pandera developers</span> (<a href="#ref-panderadocs" role="doc-biblioref">2026</a>)</span> fija el comportamiento exacto de la versión 0.32 que usan los ejercicios —<code>failure_cases</code>, validación perezosa, los <em>backends</em> de pandas y polars—, y <span class="citation" data-cites="bantilan2020pandera">Bantilan (<a href="#ref-bantilan2020pandera" role="doc-biblioref">2020</a>)</span> cuenta el porqué del diseño: el contrato de datos como objeto de primera clase, verificable en cada frontera del <em>pipeline</em>.</p></li>
+<li><p><span class="citation" data-cites="littlerubin2019missing">Little y Rubin (<a href="#ref-littlerubin2019missing" role="doc-biblioref">2019</a>)</span> es el tratado de referencia sobre datos ausentes: formaliza MCAR, MAR y MNAR y desarrolla cuanto aquí solo pudimos esbozar, de la imputación simple a la múltiple. Es el lugar al que acudir cuando la mediana por grupo se queda corta y hace falta argumentar el mecanismo.</p></li>
+<li><p><span class="citation" data-cites="kuhn2019feature">Kuhn y Johnson (<a href="#ref-kuhn2019feature" role="doc-biblioref">2019</a>)</span> trata la ingeniería de variables con criterio predictivo: codificaciones, transformaciones, interacciones y —capítulo aparte— los modos sutiles en que la fuga de datos se cuela en un <em>pipeline</em>. Su versión íntegra está disponible en abierto en la web de los autores.</p></li>
+<li><p><span class="citation" data-cites="mckinney2022python">McKinney (<a href="#ref-mckinney2022python" role="doc-biblioref">2022</a>)</span> dedica sus capítulos centrales a la limpieza y preparación de datos con pandas —ausentes, duplicados, transformaciones, datos categóricos— escritos por el creador de la biblioteca: el complemento operativo natural de este capítulo.</p></li>
+<li><p><span class="citation" data-cites="dasu2003exploratory">Dasu y Johnson (<a href="#ref-dasu2003exploratory" role="doc-biblioref">2003</a>)</span> es el clásico del oficio y la fuente del «80 %» bien citado: su prefacio afirma, en realidad, que la exploración y la limpieza constituyen el 80 % del esfuerzo <em>que determina el 80 % del valor</em> —una sentencia doble que casi nadie cita entera—. Dos décadas después, sus diagnósticos de calidad de datos siguen vigentes.</p></li>
+</ul>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">Referencias</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-baker2016reproducibility" class="csl-entry" role="listitem">
+Baker, Monya. 2016. <span>«1,500 scientists lift the lid on reproducibility»</span>. <em>Nature</em> 533 (7604): 452-54. <a href="https://doi.org/10.1038/533452a">https://doi.org/10.1038/533452a</a>.
+</div>
+<div id="ref-bantilan2020pandera" class="csl-entry" role="listitem">
+Bantilan, Niels. 2020. <span>«pandera: Statistical Data Validation of Pandas Dataframes»</span>. En <em>Proceedings of the 19th Python in Science Conference (SciPy 2020)</em>, editado por Meghann Agarwal, Chris Calloway, Dillon Niederhut, y David Shupe. <a href="https://doi.org/10.25080/Majora-342d178e-010">https://doi.org/10.25080/Majora-342d178e-010</a>.
+</div>
+<div id="ref-dasu2003exploratory" class="csl-entry" role="listitem">
+Dasu, Tamraparni, y Theodore Johnson. 2003. <em>Exploratory Data Mining and Data Cleaning</em>. Wiley. <a href="https://doi.org/10.1002/0471448354">https://doi.org/10.1002/0471448354</a>.
+</div>
+<div id="ref-iglewicz1993outliers" class="csl-entry" role="listitem">
+Iglewicz, Boris, y David C. Hoaglin. 1993. <em>How to Detect and Handle Outliers</em>. Vol. 16. ASQC Basic References en Quality Control: Statistical Techniques. ASQC Quality Press.
+</div>
+<div id="ref-kaufman2012leakage" class="csl-entry" role="listitem">
+Kaufman, Shachar, Saharon Rosset, Claudia Perlich, y Ori Stitelman. 2012. <span>«Leakage in Data Mining: Formulation, Detection, and Avoidance»</span>. <em>ACM Transactions on Knowledge Discovery from Data</em> 6 (4): 15:1-21. <a href="https://doi.org/10.1145/2382577.2382579">https://doi.org/10.1145/2382577.2382579</a>.
+</div>
+<div id="ref-kuhn2019feature" class="csl-entry" role="listitem">
+Kuhn, Max, y Kjell Johnson. 2019. <em>Feature Engineering and Selection: A Practical Approach for Predictive Models</em>. Chapman &amp; Hall/CRC. <a href="https://www.feat.engineering/">https://www.feat.engineering/</a>.
+</div>
+<div id="ref-leys2013mad" class="csl-entry" role="listitem">
+Leys, Christophe, Christophe Ley, Olivier Klein, Philippe Bernard, y Laurent Licata. 2013. <span>«Detecting outliers: Do not use standard deviation around the mean, use absolute deviation around the median»</span>. <em>Journal of Experimental Social Psychology</em> 49 (4): 764-66. <a href="https://doi.org/10.1016/j.jesp.2013.03.013">https://doi.org/10.1016/j.jesp.2013.03.013</a>.
+</div>
+<div id="ref-littlerubin2019missing" class="csl-entry" role="listitem">
+Little, Roderick J. A., y Donald B. Rubin. 2019. <em>Statistical Analysis with Missing Data</em>. 3.ª ed. Wiley. <a href="https://doi.org/10.1002/9781119482260">https://doi.org/10.1002/9781119482260</a>.
+</div>
+<div id="ref-spotifytracks" class="csl-entry" role="listitem">
+<span class="nocase">maharshipandya</span>. 2022. <span>«Spotify Tracks Dataset»</span>. <a href="https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset">https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset</a>.
+</div>
+<div id="ref-mckinney2022python" class="csl-entry" role="listitem">
+McKinney, Wes. 2022. <em>Python for Data Analysis</em>. 3.ª ed. O’Reilly Media.
+</div>
+<div id="ref-panderadocs" class="csl-entry" role="listitem">
+<span class="nocase">pandera developers</span>. 2026. <span>«pandera: The Open-source Framework for Dataset Validation»</span>. Union.ai. <a href="https://pandera.readthedocs.io/">https://pandera.readthedocs.io/</a>.
+</div>
+<div id="ref-peng2011reproducible" class="csl-entry" role="listitem">
+Peng, Roger D. 2011. <span>«Reproducible Research in Computational Science»</span>. <em>Science</em> 334 (6060): 1226-27. <a href="https://doi.org/10.1126/science.1213847">https://doi.org/10.1126/science.1213847</a>.
+</div>
+<div id="ref-press2016cleaning" class="csl-entry" role="listitem">
+Press, Gil. 2016. <span>«Cleaning Big Data: Most Time-Consuming, Least Enjoyable Data Science Task, Survey Says»</span>. Forbes, marzo 23. <a href="https://www.forbes.com/sites/gilpress/2016/03/23/data-preparation-most-time-consuming-least-enjoyable-data-science-task-survey-says/">https://www.forbes.com/sites/gilpress/2016/03/23/data-preparation-most-time-consuming-least-enjoyable-data-science-task-survey-says/</a>.
+</div>
+<div id="ref-pydanticdocs" class="csl-entry" role="listitem">
+Pydantic developers. 2026. <span>«Pydantic Documentation»</span>. Pydantic Services Inc. <a href="https://docs.pydantic.dev/latest/">https://docs.pydantic.dev/latest/</a>.
+</div>
+<div id="ref-rubin1976inference" class="csl-entry" role="listitem">
+Rubin, Donald B. 1976. <span>«Inference and Missing Data»</span>. <em>Biometrika</em> 63 (3): 581-92. <a href="https://doi.org/10.1093/biomet/63.3.581">https://doi.org/10.1093/biomet/63.3.581</a>.
+</div>
+<div id="ref-sandve2013ten" class="csl-entry" role="listitem">
+Sandve, Geir Kjetil, Anton Nekrutenko, James Taylor, y Eivind Hovig. 2013. <span>«Ten Simple Rules for Reproducible Computational Research»</span>. <em>PLoS Computational Biology</em> 9 (10): e1003285. <a href="https://doi.org/10.1371/journal.pcbi.1003285">https://doi.org/10.1371/journal.pcbi.1003285</a>.
+</div>
+<div id="ref-sklearnpitfalls" class="csl-entry" role="listitem">
+<span class="nocase">scikit-learn developers</span>. 2026. <span>«Common Pitfalls and Recommended Practices — scikit-learn Documentation»</span>. <a href="https://scikit-learn.org/stable/common_pitfalls.html">https://scikit-learn.org/stable/common_pitfalls.html</a>.
+</div>
+<div id="ref-stodden2014best" class="csl-entry" role="listitem">
+Stodden, Victoria, y Sheila Miguez. 2014. <span>«Best Practices for Computational Science: Software Infrastructure and Environments for Reproducible and Extensible Research»</span>. <em>Journal of Open Research Software</em> 2 (1): e21. <a href="https://doi.org/10.5334/jors.ay">https://doi.org/10.5334/jors.ay</a>.
+</div>
+<div id="ref-pandasdocs" class="csl-entry" role="listitem">
+The pandas development team. 2026. <span>«pandas documentation: <span>User Guide</span>»</span>. <a href="https://pandas.pydata.org/docs/user_guide/">https://pandas.pydata.org/docs/user_guide/</a>.
+</div>
+<div id="ref-tukey1977eda" class="csl-entry" role="listitem">
+Tukey, John W. 1977. <em>Exploratory Data Analysis</em>. Addison-Wesley.
+</div>
+<div id="ref-vanderplas2023handbook" class="csl-entry" role="listitem">
+VanderPlas, Jake. 2023. <em>Python Data Science Handbook</em>. 2.ª ed. O’Reilly Media.
+</div>
+<div id="ref-wilkinson2016tidy" class="csl-entry" role="listitem">
+Wickham, Hadley. 2014. <span>«Tidy Data»</span>. <em>Journal of Statistical Software</em> 59 (10). <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.
+</div>
+<div id="ref-wilkinson2016fair" class="csl-entry" role="listitem">
+<span class="nocase">Wilkinson, Mark D., Michel Dumontier, IJsbrand Jan Aalbersberg, et&nbsp;al.</span> 2016. <span>«The <span>FAIR</span> Guiding Principles for scientific data management and stewardship»</span>. <em>Scientific Data</em> 3: 160018. <a href="https://doi.org/10.1038/sdata.2016.18">https://doi.org/10.1038/sdata.2016.18</a>.
+</div>
+<div id="ref-wilson2017good" class="csl-entry" role="listitem">
+Wilson, Greg, Jennifer Bryan, Karen Cranston, Justin Kitzes, Lex Nederbragt, y Tracy K. Teal. 2017. <span>«Good enough practices in scientific computing»</span>. <em>PLoS Computational Biology</em> 13 (6): e1005510. <a href="https://doi.org/10.1371/journal.pcbi.1005510">https://doi.org/10.1371/journal.pcbi.1005510</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./cap09.html" class="pagination-link" aria-label="Capítulo 9. polars, Arrow y datos a gran escala">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Capítulo 9. polars, Arrow y datos a gran escala</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./cap11.html" class="pagination-link" aria-label="Capítulo 11. Estadística descriptiva, probabilidad e inferencia">
+        <span class="nav-page-text">Capítulo 11. Estadística descriptiva, probabilidad e inferencia</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>© 2026 Manuel Muñoz Plá · Edición web bajo licencia <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.es">CC BY-NC-ND 4.0</a> (uso académico con atribución; sin uso comercial ni obras derivadas) · El código va aparte bajo licencia MIT</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

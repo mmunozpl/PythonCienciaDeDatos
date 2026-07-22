@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Genera notebooks ejecutables desde los scripts del libro (uno por capítulo).
+# Se colocan en la raíz para que 'data/...' (rutas relativas) resuelva.
+set -euo pipefail
+for f in src/cap*.py; do
+  base="$(basename "${f%.py}")"
+  jupytext --to ipynb "$f" -o "${base}.ipynb"
+done
+echo "notebooks generados: $(ls cap*.ipynb 2>/dev/null | wc -l)"

@@ -1,0 +1,23 @@
+# Entorno reproducible para Binder (mybinder.org) — edición web ejecutable.
+# torch en versión CPU para que la imagen sea ligera y el build viable.
+# Se topan los *majors* que romperían el código del libro (escrito para pandas 2.x,
+# numpy 2.x): así el entorno queda reproducible y las celdas se ejecutan igual.
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+numpy>=2.0,<3
+pandas>=2.2,<3
+polars>=1.0,<2
+pyarrow>=16.0
+scikit-learn>=1.5,<2
+scipy>=1.13,<2
+matplotlib>=3.9,<4
+seaborn>=0.13
+plotly>=6.0
+pandera>=0.20
+duckdb>=1.0
+diffprivlib>=0.6
+torch>=2.0
+
+# soporte de notebooks
+jupyterlab>=4.0
+jupytext>=1.16

@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Capítulo 1. Entorno de trabajo y flujo reproducible – Python para la Ciencia de Datos</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./cap02.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-c51ee271f6426d8ddbbd81f2fce6c0c5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No se han encontrado resultados",
+    "search-matching-documents-text": "documentos encontrados",
+    "search-copy-link-title": "Copiar el enlace en la búsqueda",
+    "search-hide-matches-text": "Ocultar resultados adicionales",
+    "search-more-match-text": "resultado adicional en este documento",
+    "search-more-matches-text": "resultados adicionales en este documento",
+    "search-clear-button-title": "Borrar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Buscar"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar docked quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./cap01.html">Capítulo 1. Entorno de trabajo y flujo reproducible</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Buscar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Python para la Ciencia de Datos</a> 
+        <div class="sidebar-tools-main">
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo lector">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Buscar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Inicio</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap01.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Capítulo 1. Entorno de trabajo y flujo reproducible</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap02.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 2. El modelo de datos de Python: objetos, tipos y memoria</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap03.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 3. Control de flujo, funciones y manejo de errores</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap04.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 4. Estructuras de datos integradas y su coste</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap05.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 5. Entrada/salida, ficheros y formatos de datos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap06.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 6. Programación orientada a objetos y patrones para datos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap07.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 7. NumPy: cómputo vectorizado</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap08.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 8. pandas: análisis tabular en profundidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap09.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 9. polars, Arrow y datos a gran escala</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap10.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 10. El ciclo de trabajo: limpieza, calidad y transformación</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap11.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 11. Estadística descriptiva, probabilidad e inferencia</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap12.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 12. Visualización de datos</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap13.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 13. Fundamentos del aprendizaje automático</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap14.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 14. scikit-learn y el aprendizaje moderno</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap15.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 15. Privacidad y confidencialidad</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./cap16.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulo 16. Reproducibilidad, ingeniería, despliegue y ética</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">En esta página</h2>
+   
+  <ul>
+  <li><a href="#qué-significa-programar-para-datos" id="toc-qué-significa-programar-para-datos" class="nav-link active" data-scroll-target="#qué-significa-programar-para-datos">Qué significa «programar para datos»</a>
+  <ul class="collapse">
+  <li><a href="#la-crisis-de-reproducibilidad" id="toc-la-crisis-de-reproducibilidad" class="nav-link" data-scroll-target="#la-crisis-de-reproducibilidad">La crisis de reproducibilidad</a></li>
+  <li><a href="#los-cuatro-pilares" id="toc-los-cuatro-pilares" class="nav-link" data-scroll-target="#los-cuatro-pilares">Los cuatro pilares</a></li>
+  <li><a href="#reproducible-replicable-robusto" id="toc-reproducible-replicable-robusto" class="nav-link" data-scroll-target="#reproducible-replicable-robusto">Reproducible, replicable, robusto</a></li>
+  <li><a href="#datos-que-se-puedan-encontrar-y-reutilizar-los-principios-fair" id="toc-datos-que-se-puedan-encontrar-y-reutilizar-los-principios-fair" class="nav-link" data-scroll-target="#datos-que-se-puedan-encontrar-y-reutilizar-los-principios-fair">Datos que se puedan encontrar y reutilizar: los principios FAIR</a></li>
+  <li><a href="#las-tres-clases-de-dato-anticipo" id="toc-las-tres-clases-de-dato-anticipo" class="nav-link" data-scroll-target="#las-tres-clases-de-dato-anticipo">Las tres clases de dato (anticipo)</a></li>
+  <li><a href="#diez-reglas-para-no-engañarse" id="toc-diez-reglas-para-no-engañarse" class="nav-link" data-scroll-target="#diez-reglas-para-no-engañarse">Diez reglas para no engañarse</a></li>
+  </ul></li>
+  <li><a href="#el-intérprete-de-python-y-su-ecosistema" id="toc-el-intérprete-de-python-y-su-ecosistema" class="nav-link" data-scroll-target="#el-intérprete-de-python-y-su-ecosistema">El intérprete de Python y su ecosistema</a>
+  <ul class="collapse">
+  <li><a href="#un-lenguaje-interpretado" id="toc-un-lenguaje-interpretado" class="nav-link" data-scroll-target="#un-lenguaje-interpretado">Un lenguaje interpretado</a></li>
+  <li><a href="#del-código-fuente-a-la-ejecución" id="toc-del-código-fuente-a-la-ejecución" class="nav-link" data-scroll-target="#del-código-fuente-a-la-ejecución">Del código fuente a la ejecución</a></li>
+  <li><a href="#por-qué-python-en-ciencia-de-datos" id="toc-por-qué-python-en-ciencia-de-datos" class="nav-link" data-scroll-target="#por-qué-python-en-ciencia-de-datos">Por qué Python en ciencia de datos</a></li>
+  <li><a href="#breve-historia-del-python-científico" id="toc-breve-historia-del-python-científico" class="nav-link" data-scroll-target="#breve-historia-del-python-científico">Breve historia del Python científico</a></li>
+  <li><a href="#versiones-de-python-y-su-cadencia" id="toc-versiones-de-python-y-su-cadencia" class="nav-link" data-scroll-target="#versiones-de-python-y-su-cadencia">Versiones de Python y su cadencia</a></li>
+  <li><a href="#el-repl-y-el-primer-programa" id="toc-el-repl-y-el-primer-programa" class="nav-link" data-scroll-target="#el-repl-y-el-primer-programa">El REPL y el primer programa</a></li>
+  </ul></li>
+  <li><a href="#la-línea-de-comandos-para-datos" id="toc-la-línea-de-comandos-para-datos" class="nav-link" data-scroll-target="#la-línea-de-comandos-para-datos">La línea de comandos para datos</a>
+  <ul class="collapse">
+  <li><a href="#navegación-y-manipulación-de-ficheros" id="toc-navegación-y-manipulación-de-ficheros" class="nav-link" data-scroll-target="#navegación-y-manipulación-de-ficheros">Navegación y manipulación de ficheros</a></li>
+  <li><a href="#tuberías-componer-herramientas-pequeñas" id="toc-tuberías-componer-herramientas-pequeñas" class="nav-link" data-scroll-target="#tuberías-componer-herramientas-pequeñas">Tuberías: componer herramientas pequeñas</a></li>
+  <li><a href="#variables-bucles-y-automatización" id="toc-variables-bucles-y-automatización" class="nav-link" data-scroll-target="#variables-bucles-y-automatización">Variables, bucles y automatización</a></li>
+  </ul></li>
+  <li><a href="#entornos-aislados-y-gestión-de-dependencias" id="toc-entornos-aislados-y-gestión-de-dependencias" class="nav-link" data-scroll-target="#entornos-aislados-y-gestión-de-dependencias">Entornos aislados y gestión de dependencias</a>
+  <ul class="collapse">
+  <li><a href="#el-aislamiento-en-la-práctica" id="toc-el-aislamiento-en-la-práctica" class="nav-link" data-scroll-target="#el-aislamiento-en-la-práctica">El aislamiento en la práctica</a></li>
+  <li><a href="#el-flujo-clásico-venv-y-pip" id="toc-el-flujo-clásico-venv-y-pip" class="nav-link" data-scroll-target="#el-flujo-clásico-venv-y-pip">El flujo clásico: <code>venv</code> y <code>pip</code></a></li>
+  <li><a href="#la-estandarización-pyproject.toml" id="toc-la-estandarización-pyproject.toml" class="nav-link" data-scroll-target="#la-estandarización-pyproject.toml">La estandarización: <code>pyproject.toml</code></a></li>
+  <li><a href="#estado-del-arte-2026-uv" id="toc-estado-del-arte-2026-uv" class="nav-link" data-scroll-target="#estado-del-arte-2026-uv">Estado del arte 2026: <code>uv</code></a></li>
+  <li><a href="#el-otro-ecosistema-conda-y-mamba" id="toc-el-otro-ecosistema-conda-y-mamba" class="nav-link" data-scroll-target="#el-otro-ecosistema-conda-y-mamba">El otro ecosistema: <code>conda</code> y <code>mamba</code></a></li>
+  <li><a href="#declarado-frente-a-resuelto-versiones-y-semver" id="toc-declarado-frente-a-resuelto-versiones-y-semver" class="nav-link" data-scroll-target="#declarado-frente-a-resuelto-versiones-y-semver">Declarado frente a resuelto: versiones y <em>semver</em></a></li>
+  </ul></li>
+  <li><a href="#editores-notebooks-y-ejecución-determinista" id="toc-editores-notebooks-y-ejecución-determinista" class="nav-link" data-scroll-target="#editores-notebooks-y-ejecución-determinista">Editores, notebooks y ejecución determinista</a>
+  <ul class="collapse">
+  <li><a href="#el-script-y-el-editor" id="toc-el-script-y-el-editor" class="nav-link" data-scroll-target="#el-script-y-el-editor">El script y el editor</a></li>
+  <li><a href="#el-editor-moderno-y-sus-superpoderes" id="toc-el-editor-moderno-y-sus-superpoderes" class="nav-link" data-scroll-target="#el-editor-moderno-y-sus-superpoderes">El editor moderno y sus superpoderes</a></li>
+  <li><a href="#el-notebook-exploración-y-narración" id="toc-el-notebook-exploración-y-narración" class="nav-link" data-scroll-target="#el-notebook-exploración-y-narración">El notebook: exploración y narración</a></li>
+  <li><a href="#la-trampa-del-estado-oculto" id="toc-la-trampa-del-estado-oculto" class="nav-link" data-scroll-target="#la-trampa-del-estado-oculto">La trampa del estado oculto</a></li>
+  <li><a href="#notebooks-reactivos-y-publicación-literaria" id="toc-notebooks-reactivos-y-publicación-literaria" class="nav-link" data-scroll-target="#notebooks-reactivos-y-publicación-literaria">Notebooks reactivos y publicación literaria</a></li>
+  <li><a href="#cuándo-el-script-cuándo-el-notebook" id="toc-cuándo-el-script-cuándo-el-notebook" class="nav-link" data-scroll-target="#cuándo-el-script-cuándo-el-notebook">Cuándo el script, cuándo el notebook</a></li>
+  </ul></li>
+  <li><a href="#depuración-registro-y-calidad-de-código" id="toc-depuración-registro-y-calidad-de-código" class="nav-link" data-scroll-target="#depuración-registro-y-calidad-de-código">Depuración, registro y calidad de código</a>
+  <ul class="collapse">
+  <li><a href="#depurar-mirar-dentro-del-programa" id="toc-depurar-mirar-dentro-del-programa" class="nav-link" data-scroll-target="#depurar-mirar-dentro-del-programa">Depurar: mirar dentro del programa</a></li>
+  <li><a href="#registrar-en-vez-de-imprimir" id="toc-registrar-en-vez-de-imprimir" class="nav-link" data-scroll-target="#registrar-en-vez-de-imprimir">Registrar en vez de imprimir</a></li>
+  <li><a href="#validar-raise-no-assert" id="toc-validar-raise-no-assert" class="nav-link" data-scroll-target="#validar-raise-no-assert">Validar: <code>raise</code>, no <code>assert</code></a></li>
+  <li><a href="#formato-estilo-y-tipos-ruff-y-mypy" id="toc-formato-estilo-y-tipos-ruff-y-mypy" class="nav-link" data-scroll-target="#formato-estilo-y-tipos-ruff-y-mypy">Formato, estilo y tipos: <code>ruff</code> y <code>mypy</code></a></li>
+  <li><a href="#estilo-pep-8-y-el-zen-de-python" id="toc-estilo-pep-8-y-el-zen-de-python" class="nav-link" data-scroll-target="#estilo-pep-8-y-el-zen-de-python">Estilo: PEP 8 y el Zen de Python</a></li>
+  </ul></li>
+  <li><a href="#control-de-versiones-con-git" id="toc-control-de-versiones-con-git" class="nav-link" data-scroll-target="#control-de-versiones-con-git">Control de versiones con Git</a>
+  <ul class="collapse">
+  <li><a href="#buenos-mensajes-y-qué-no-versionar" id="toc-buenos-mensajes-y-qué-no-versionar" class="nav-link" data-scroll-target="#buenos-mensajes-y-qué-no-versionar">Buenos mensajes y qué no versionar</a></li>
+  <li><a href="#trabajo-en-equipo-y-revisión-de-código" id="toc-trabajo-en-equipo-y-revisión-de-código" class="nav-link" data-scroll-target="#trabajo-en-equipo-y-revisión-de-código">Trabajo en equipo y revisión de código</a></li>
+  </ul></li>
+  <li><a href="#contenedores-reproducibilidad-a-largo-plazo" id="toc-contenedores-reproducibilidad-a-largo-plazo" class="nav-link" data-scroll-target="#contenedores-reproducibilidad-a-largo-plazo">Contenedores: reproducibilidad a largo plazo</a></li>
+  <li><a href="#anatomía-de-un-proyecto-reproducible" id="toc-anatomía-de-un-proyecto-reproducible" class="nav-link" data-scroll-target="#anatomía-de-un-proyecto-reproducible">Anatomía de un proyecto reproducible</a></li>
+  <li><a href="#determinismo-y-aleatoriedad-reproducible" id="toc-determinismo-y-aleatoriedad-reproducible" class="nav-link" data-scroll-target="#determinismo-y-aleatoriedad-reproducible">Determinismo y aleatoriedad reproducible</a></li>
+  <li><a href="#documentación-y-comunicación-del-código" id="toc-documentación-y-comunicación-del-código" class="nav-link" data-scroll-target="#documentación-y-comunicación-del-código">Documentación y comunicación del código</a>
+  <ul class="collapse">
+  <li><a href="#el-readme-como-puerta-de-entrada" id="toc-el-readme-como-puerta-de-entrada" class="nav-link" data-scroll-target="#el-readme-como-puerta-de-entrada">El README como puerta de entrada</a></li>
+  <li><a href="#docstrings-el-contrato-de-cada-función" id="toc-docstrings-el-contrato-de-cada-función" class="nav-link" data-scroll-target="#docstrings-el-contrato-de-cada-función">Docstrings: el contrato de cada función</a></li>
+  </ul></li>
+  <li><a href="#procedencia-licencias-y-caché-de-datos" id="toc-procedencia-licencias-y-caché-de-datos" class="nav-link" data-scroll-target="#procedencia-licencias-y-caché-de-datos">Procedencia, licencias y caché de datos</a>
+  <ul class="collapse">
+  <li><a href="#de-dónde-vienen-los-datos" id="toc-de-dónde-vienen-los-datos" class="nav-link" data-scroll-target="#de-dónde-vienen-los-datos">De dónde vienen los datos</a></li>
+  <li><a href="#licencias-tener-el-dato-no-es-tener-el-derecho" id="toc-licencias-tener-el-dato-no-es-tener-el-derecho" class="nav-link" data-scroll-target="#licencias-tener-el-dato-no-es-tener-el-derecho">Licencias: tener el dato no es tener el derecho</a></li>
+  <li><a href="#caché-idempotente-descargar-una-vez" id="toc-caché-idempotente-descargar-una-vez" class="nav-link" data-scroll-target="#caché-idempotente-descargar-una-vez">Caché idempotente: descargar una vez</a></li>
+  </ul></li>
+  <li><a href="#medir-sin-engañarse-rendimiento-y-tiempos" id="toc-medir-sin-engañarse-rendimiento-y-tiempos" class="nav-link" data-scroll-target="#medir-sin-engañarse-rendimiento-y-tiempos">Medir sin engañarse: rendimiento y tiempos</a></li>
+  <li><a href="#el-entorno-en-la-nube-y-la-automatización" id="toc-el-entorno-en-la-nube-y-la-automatización" class="nav-link" data-scroll-target="#el-entorno-en-la-nube-y-la-automatización">El entorno en la nube y la automatización</a>
+  <ul class="collapse">
+  <li><a href="#notebooks-y-entornos-en-la-nube" id="toc-notebooks-y-entornos-en-la-nube" class="nav-link" data-scroll-target="#notebooks-y-entornos-en-la-nube">Notebooks y entornos en la nube</a></li>
+  <li><a href="#integración-continua-automatizar-las-comprobaciones" id="toc-integración-continua-automatizar-las-comprobaciones" class="nav-link" data-scroll-target="#integración-continua-automatizar-las-comprobaciones">Integración continua: automatizar las comprobaciones</a></li>
+  </ul></li>
+  <li><a href="#configuración-secretos-y-determinismo-del-entorno" id="toc-configuración-secretos-y-determinismo-del-entorno" class="nav-link" data-scroll-target="#configuración-secretos-y-determinismo-del-entorno">Configuración, secretos y determinismo del entorno</a>
+  <ul class="collapse">
+  <li><a href="#configuración-fuera-del-código" id="toc-configuración-fuera-del-código" class="nav-link" data-scroll-target="#configuración-fuera-del-código">Configuración fuera del código</a></li>
+  <li><a href="#determinismo-del-entorno-el-orden-y-el-hash" id="toc-determinismo-del-entorno-el-orden-y-el-hash" class="nav-link" data-scroll-target="#determinismo-del-entorno-el-orden-y-el-hash">Determinismo del entorno: el orden y el <em>hash</em></a></li>
+  </ul></li>
+  <li><a href="#errores-frecuentes-al-empezar" id="toc-errores-frecuentes-al-empezar" class="nav-link" data-scroll-target="#errores-frecuentes-al-empezar">Errores frecuentes al empezar</a></li>
+  <li><a href="#un-primer-flujo-completo-de-principio-a-fin" id="toc-un-primer-flujo-completo-de-principio-a-fin" class="nav-link" data-scroll-target="#un-primer-flujo-completo-de-principio-a-fin">Un primer flujo completo, de principio a fin</a>
+  <ul class="collapse">
+  <li><a href="#preparar-el-entorno" id="toc-preparar-el-entorno" class="nav-link" data-scroll-target="#preparar-el-entorno">Preparar el entorno</a></li>
+  <li><a href="#generar-un-artefacto-de-forma-determinista" id="toc-generar-un-artefacto-de-forma-determinista" class="nav-link" data-scroll-target="#generar-un-artefacto-de-forma-determinista">Generar un artefacto de forma determinista</a></li>
+  <li><a href="#consumir-el-artefacto" id="toc-consumir-el-artefacto" class="nav-link" data-scroll-target="#consumir-el-artefacto">Consumir el artefacto</a></li>
+  <li><a href="#orquestar-y-versionar" id="toc-orquestar-y-versionar" class="nav-link" data-scroll-target="#orquestar-y-versionar">Orquestar y versionar</a></li>
+  <li><a href="#verificar-la-reproducibilidad" id="toc-verificar-la-reproducibilidad" class="nav-link" data-scroll-target="#verificar-la-reproducibilidad">Verificar la reproducibilidad</a></li>
+  </ul></li>
+  <li><a href="#lecturas-recomendadas" id="toc-lecturas-recomendadas" class="nav-link" data-scroll-target="#lecturas-recomendadas">Lecturas recomendadas</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Capítulo 1. Entorno de trabajo y flujo reproducible</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><a href="https://mybinder.org/v2/gh/mmunozpl/PythonCienciaDeDatos/HEAD?urlpath=lab/tree/cap01_entorno.ipynb" class="btn btn-primary btn-sm" role="button">▶ Ejecutar este capítulo en Binder</a></p>
+<div class="callout callout-style-default callout-note callout-titled" title="El primer arranque tarda unos minutos">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>El primer arranque tarda unos minutos
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>La primera vez que se abre, Binder construye el entorno en la nube (unos 10-20 min); verás una pantalla de progreso. Después queda en caché y abre en segundos. Si parece que no responde, espera a que termine de construirse o vuelve a intentarlo.</p>
+</div>
+</div>
+</div>
+<p>Casi todo curso de programación comienza por la sintaxis: se enseña a escribir un bucle antes de mostrar dónde vive, cómo se ejecuta y cómo se comparte. En ciencia de datos conviene el orden inverso, porque el producto no es un programa que corre una vez, sino un <em>resultado que otra persona debe poder reproducir</em>: la misma entrada, el mismo código y el mismo entorno han de dar la misma salida. Este capítulo construye ese andamiaje antes de escribir una línea de análisis, y enlaza con el resto del libro: la reproducibilidad que aquí se plantea reaparece en el registro de cifras (cap.&nbsp;10), en la estadística honesta (cap.&nbsp;11) y en la ingeniería del proyecto (cap.&nbsp;16). No es un capítulo de «puesta a punto» que se pueda saltar: es la base metodológica sobre la que se sostiene todo lo demás.</p>
+<section id="qué-significa-programar-para-datos" class="level2">
+<h2 class="anchored" data-anchor-id="qué-significa-programar-para-datos">Qué significa «programar para datos»</h2>
+<p>Programar para la ciencia de datos es escribir código cuyo objetivo no es principalmente <em>funcionar</em>, sino <em>convencer</em>. Un script que ajusta un modelo e imprime un acierto de <span class="math inline">\(0{,}92\)</span> no vale nada si nadie —ni tú dentro de seis meses— puede volver a obtener ese número. La diferencia entre un análisis y una anécdota es la reproducibilidad, y esa diferencia no es un matiz académico: es lo que separa un resultado defendible de una impresión personal.</p>
+<section id="la-crisis-de-reproducibilidad" class="level3">
+<h3 class="anchored" data-anchor-id="la-crisis-de-reproducibilidad">La crisis de reproducibilidad</h3>
+<p>La preocupación por la reproducibilidad no es una manía de programadores meticulosos: es una respuesta a un problema documentado a gran escala. En una encuesta a más de mil quinientos científicos, más del 70 % declaró haber sido incapaz de reproducir los experimentos de otro investigador, y más de la mitad no pudo reproducir los suyos propios <span class="citation" data-cites="baker2016reproducibility">(<a href="#ref-baker2016reproducibility" role="doc-biblioref">Baker 2016</a>)</span>. En el terreno computacional —donde, en teoría, todo debería ser perfectamente repetible, porque un ordenador hace siempre lo mismo— la situación no es mejor: <span class="citation" data-cites="peng2011reproducible">Peng (<a href="#ref-peng2011reproducible" role="doc-biblioref">2011</a>)</span> argumenta que la reproducibilidad computacional debería ser el estándar mínimo verificable de la ciencia, y sin embargo rara vez se cumple. La causa no suele ser el fraude, sino la pérdida de contexto: versiones de bibliotecas que cambian, semillas aleatorias no fijadas, pasos manuales no registrados, datos que se editaron «a mano» una tarde y nadie anotó.</p>
+<p>El caso de los cuadernos de análisis es especialmente revelador. En un estudio de más de un millón de <em>notebooks</em> de Jupyter publicados en repositorios públicos, <span class="citation" data-cites="pimentel2019large">Pimentel et&nbsp;al. (<a href="#ref-pimentel2019large" role="doc-biblioref">2019</a>)</span> intentaron ejecutarlos de principio a fin en un entorno limpio: solo una pequeña fracción se ejecutó sin errores, y de esos, una fracción aún menor reprodujo los resultados originales. La lección es contundente: publicar el código <em>no</em> garantiza la reproducibilidad; hace falta una disciplina explícita. Este libro adopta esa disciplina desde la primera página.</p>
+<p>Conviene nombrar los modos de fallo concretos, porque conocerlos es el primer paso para evitarlos. Los más frecuentes en un trabajo de datos son cinco. <em>Versiones sin fijar</em>: el código se escribió con una versión de una biblioteca y se ejecuta con otra que cambió un comportamiento por defecto, de modo que el resultado varía sin que nadie haya tocado una línea. <em>Pasos manuales no registrados</em>: alguien «arregló» un dato a mano en una hoja de cálculo, o ejecutó unas celdas en cierto orden, y ese paso no queda en ningún sitio. <em>Semillas no fijadas</em>: un proceso aleatorio da números distintos cada vez, y con ellos cifras distintas. <em>Datos crudos perdidos o modificados</em>: se editó el fichero original en lugar de trabajar sobre una copia, y ya no hay forma de volver al punto de partida. <em>Estado oculto del notebook</em>: el resultado en pantalla lo produjo una versión anterior de una celda que después se cambió. Los cinco son evitables con disciplina, y los cinco reaparecen, ya resueltos, a lo largo del libro.</p>
+</section>
+<section id="los-cuatro-pilares" class="level3">
+<h3 class="anchored" data-anchor-id="los-cuatro-pilares">Los cuatro pilares</h3>
+<p>Reproducibilidad significa que cuatro cosas están fijadas y registradas, tal como resume la figura&nbsp;1.1:</p>
+<ul>
+<li><p><strong>El código</strong>, versionado (§1.7), de modo que se sepa exactamente qué instrucciones se ejecutaron.</p></li>
+<li><p><strong>Los datos</strong>, con su procedencia y, a ser posible, una copia inmutable o un identificador de versión.</p></li>
+<li><p><strong>El entorno</strong>: qué versión de Python y de cada biblioteca se usó (§1.4). <code>pandas</code> 1.5 y <code>pandas</code> 2.2 no siempre dan el mismo resultado.</p></li>
+<li><p><strong>La aleatoriedad</strong>, mediante semillas fijas (§1.10), para que una partición o una inicialización aleatoria sean repetibles.</p></li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/cap01/fig_01.svg" class="img-fluid figure-img"></p>
+<figcaption><strong>Figura&nbsp;1.1.</strong> <strong>Los cuatro pilares de la reproducibilidad.</strong> Código, datos, entorno y semillas se combinan en un resultado reproducible. Si falta cualquiera, el número deja de ser defendible. Cada pilar tiene su sección en este capítulo y su desarrollo en el resto del libro.</figcaption>
+</figure>
+</div>
+<p>Estos cuatro pilares no son una aspiración vaga; existen guías operativas que los concretan en reglas comprobables. <span class="citation" data-cites="sandve2013ten">Sandve et&nbsp;al. (<a href="#ref-sandve2013ten" role="doc-biblioref">2013</a>)</span> proponen «diez reglas simples» —desde registrar cómo se produjo cada resultado hasta versionar todo el código personalizado— que se pueden seguir literalmente. <span class="citation" data-cites="wilson2017good">Wilson et&nbsp;al. (<a href="#ref-wilson2017good" role="doc-biblioref">2017</a>)</span> las condensan en «prácticas suficientemente buenas» para quien no es ingeniero de software pero sí necesita que su ciencia se sostenga. La colección abierta <em>The Turing Way</em> <span class="citation" data-cites="turingway">(<a href="#ref-turingway" role="doc-biblioref">The Turing Way Community 2022</a>)</span> reúne y actualiza este cuerpo de conocimiento y es, hoy, la referencia práctica más completa. La actitud, no obstante, se adquiere desde el primer día con una regla mínima: <strong>nunca teclees un número a mano si puedes calcularlo</strong>, y nunca ejecutes código que no sepas volver a ejecutar igual.</p>
+</section>
+<section id="reproducible-replicable-robusto" class="level3">
+<h3 class="anchored" data-anchor-id="reproducible-replicable-robusto">Reproducible, replicable, robusto</h3>
+<p>Conviene distinguir tres términos que se confunden a menudo y que marcan niveles de exigencia crecientes. Un resultado es <strong>reproducible</strong> cuando, con los <em>mismos</em> datos y el <em>mismo</em> código, cualquiera obtiene el <em>mismo</em> resultado; es el mínimo verificable, y el objetivo directo de este capítulo. Es <strong>replicable</strong> cuando un estudio <em>nuevo</em>, con datos nuevos recogidos de forma independiente, llega a la <em>misma conclusión</em>; esto ya no depende solo del código, sino de que el fenómeno sea real. Y es <strong>robusto</strong> cuando la conclusión se sostiene aunque se analice con <em>métodos distintos</em>. La reproducibilidad no garantiza que una conclusión sea cierta —un análisis reproducible puede estar reproduciblemente equivocado—, pero es la condición previa de todo lo demás: sin ella no se puede siquiera empezar a discutir si un resultado replica o es robusto. Por eso <span class="citation" data-cites="peng2011reproducible">Peng (<a href="#ref-peng2011reproducible" role="doc-biblioref">2011</a>)</span> la sitúa como el estándar mínimo, no como la meta final. Este libro se ocupa sobre todo de la primera —hacer que tus resultados sean reproducibles— y, en el capítulo&nbsp;11, de las herramientas estadísticas que ayudan a juzgar si además son robustos.</p>
+</section>
+<section id="datos-que-se-puedan-encontrar-y-reutilizar-los-principios-fair" class="level3">
+<h3 class="anchored" data-anchor-id="datos-que-se-puedan-encontrar-y-reutilizar-los-principios-fair">Datos que se puedan encontrar y reutilizar: los principios FAIR</h3>
+<p>La reproducibilidad del <em>código</em> se complementa con la buena gestión de los <em>datos</em>. Los principios FAIR <span class="citation" data-cites="wilkinson2016fair">(<a href="#ref-wilkinson2016fair" role="doc-biblioref"><span class="nocase">Wilkinson et&nbsp;al.</span> 2016</a>)</span> —del inglés <em>Findable, Accessible, Interoperable, Reusable</em>— establecen que los datos deben ser localizables (con un identificador persistente), accesibles (con un protocolo claro), interoperables (en formatos y vocabularios estándar) y reutilizables (con licencia y procedencia explícitas). En la práctica de este libro, FAIR se traduce en decisiones concretas: descargar los datos de una fuente canónica y citarla, guardarlos en formatos abiertos (§5), y anotar la fecha y la versión de descarga para poder referirse a <em>exactamente</em> esos datos. Un análisis reproducible sobre datos que ya no se pueden encontrar es media reproducibilidad.</p>
+</section>
+<section id="las-tres-clases-de-dato-anticipo" class="level3">
+<h3 class="anchored" data-anchor-id="las-tres-clases-de-dato-anticipo">Las tres clases de dato (anticipo)</h3>
+<p>Adelantamos aquí la disciplina que formalizaremos en §10. Todo número que escribas en un informe pertenece a una de tres clases, y la clase se hace <em>visible</em> al lector: es <em>medido</em> (lo calculó tu código, es reproducible), <em>sintético</em> (lo generaste a propósito para ilustrar) o <em>citado</em> (lo tomaste de una fuente, con su referencia). Confundir las clases —presentar como medición lo que es una cita, o como dato general lo que es un artefacto de tu muestra— es la falta más grave en un trabajo de datos. La reproducibilidad es, precisamente, lo que permite defender que un número es de la primera clase.</p>
+</section>
+<section id="diez-reglas-para-no-engañarse" class="level3">
+<h3 class="anchored" data-anchor-id="diez-reglas-para-no-engañarse">Diez reglas para no engañarse</h3>
+<p>Conviene bajar los pilares a reglas accionables. <span class="citation" data-cites="sandve2013ten">Sandve et&nbsp;al. (<a href="#ref-sandve2013ten" role="doc-biblioref">2013</a>)</span> proponen diez, ordenadas de lo más básico a lo más exigente, que sirven como lista de comprobación de cualquier análisis:</p>
+<ol type="1">
+<li><p><strong>Registra cómo se produjo cada resultado.</strong> Anota el comando o el <em>script</em> exacto que generó cada número y cada figura.</p></li>
+<li><p><strong>Evita los pasos manuales</strong> de manipulación de datos. Todo lo que se hace «a mano» en una hoja de cálculo es irreproducible; automatízalo.</p></li>
+<li><p><strong>Archiva las versiones exactas</strong> de los programas externos usados (el pilar del entorno, §1.4).</p></li>
+<li><p><strong>Versiona todo el código</strong> propio (§1.7).</p></li>
+<li><p><strong>Guarda los resultados intermedios</strong> en formatos estándar, para poder retomar el análisis desde cualquier punto.</p></li>
+<li><p><strong>Anota las semillas</strong> de cualquier proceso aleatorio (§1.10).</p></li>
+<li><p><strong>Conserva los datos crudos</strong> detrás de cada gráfica, no solo la imagen final.</p></li>
+<li><p><strong>Genera salidas jerárquicas</strong>, que permitan inspeccionar el detalle creciente de un resultado.</p></li>
+<li><p><strong>Conecta las afirmaciones del texto</strong> con los resultados que las sostienen (la esencia de «medir, no proclamar», cap.&nbsp;10).</p></li>
+<li><p><strong>Da acceso público</strong> a los <em>scripts</em>, las ejecuciones y los resultados.</p></li>
+</ol>
+<p>Ninguna es difícil por separado; la disciplina está en seguirlas siempre. Este libro las encarna: cada capítulo tiene su código en <code>src/</code>, cada cifra sale de él, y cada figura se regenera con un comando.</p>
+</section>
+</section>
+<section id="el-intérprete-de-python-y-su-ecosistema" class="level2">
+<h2 class="anchored" data-anchor-id="el-intérprete-de-python-y-su-ecosistema">El intérprete de Python y su ecosistema</h2>
+<section id="un-lenguaje-interpretado" class="level3">
+<h3 class="anchored" data-anchor-id="un-lenguaje-interpretado">Un lenguaje interpretado</h3>
+<p>Python es un lenguaje <em>interpretado</em>: no se compila a un ejecutable de una vez, sino que un programa —el intérprete, <code>python</code>— lee tu código, lo traduce a un formato intermedio (<em>bytecode</em>) y lo ejecuta instrucción a instrucción. La implementación de referencia se llama <strong>CPython</strong>, y es la que casi todo el mundo usa. Esta arquitectura tiene una consecuencia que marcará toda la Parte&nbsp;III del libro: interpretar cada operación tiene un coste, y por eso un bucle de Python sobre millones de números es lento comparado con el mismo cálculo delegado a código compilado (NumPy, cap.&nbsp;7). Conviene saber, desde el principio, qué intérprete y qué versión tenemos, porque el comportamiento cambia entre versiones:</p>
+<pre><code>import sys
+print(sys.version)        # p. ej. '3.12.7 (main, ...)'
+print(sys.executable)     # ruta al interprete que esta corriendo
+print(sys.implementation.name)   # 'cpython'</code></pre>
+</section>
+<section id="del-código-fuente-a-la-ejecución" class="level3">
+<h3 class="anchored" data-anchor-id="del-código-fuente-a-la-ejecución">Del código fuente a la ejecución</h3>
+<p>Entender, aunque sea a grandes rasgos, qué hace el intérprete evita muchos malentendidos posteriores. Cuando ejecutas un fichero, CPython no lee tu texto línea a línea cada vez: primero lo <em>compila</em> a un formato intermedio llamado <em>bytecode</em> —un juego de instrucciones sencillas, independiente de tu ordenador— y después una <em>máquina virtual</em> (la PVM, <em>Python Virtual Machine</em>) ejecuta ese bytecode. La figura&nbsp;1.2 lo esquematiza. El bytecode compilado se guarda en cachés (las carpetas <code>__pycache__</code>), para no recompilar lo que no ha cambiado.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/cap01/fig_02.svg" class="img-fluid figure-img"></p>
+<figcaption><strong>Figura&nbsp;1.2.</strong> <strong>Modelo de ejecución de CPython.</strong> CPython compila el código a un <em>bytecode</em> intermedio que una máquina virtual ejecuta instrucción a instrucción. Ese paso de interpretación es lo que hace un bucle de Python más lento que su equivalente vectorizado (cap.&nbsp;7).</figcaption>
+</figure>
+</div>
+<p>Esta arquitectura explica dos hechos importantes. El primero, ya mencionado: la interpretación tiene un coste por operación, que la vectorización de la Parte&nbsp;III elude delegando los bucles a código C compilado. El segundo: como el bytecode es independiente de la máquina, el mismo <code>.py</code> corre igual en Linux, macOS y Windows, siempre que las bibliotecas estén disponibles —la portabilidad que hace de Python un lenguaje cómodo para colaborar—.</p>
+</section>
+<section id="por-qué-python-en-ciencia-de-datos" class="level3">
+<h3 class="anchored" data-anchor-id="por-qué-python-en-ciencia-de-datos">Por qué Python en ciencia de datos</h3>
+<p>Python no nació para la ciencia de datos; se convirtió en su lengua franca por una combinación de factores. Es legible y de curva de aprendizaje suave, y rebaja así la barrera de entrada para quien no es programador profesional. Pero, sobre todo, acumuló un ecosistema de bibliotecas científicas construidas unas sobre otras. <span class="citation" data-cites="oliphant2007python">Oliphant (<a href="#ref-oliphant2007python" role="doc-biblioref">2007</a>)</span> describía ya en 2007 por qué Python era una elección natural para el cómputo científico, y <span class="citation" data-cites="perez2007ipython">Pérez y Granger (<a href="#ref-perez2007ipython" role="doc-biblioref">2007</a>)</span> presentaban <code>IPython</code>, el intérprete interactivo mejorado que sembró lo que hoy son los <em>notebooks</em>. Sobre esa base creció NumPy <span class="citation" data-cites="harris2020numpy">(<a href="#ref-harris2020numpy" role="doc-biblioref"><span class="nocase">Harris et&nbsp;al.</span> 2020</a>)</span>, y sobre NumPy, pandas, scikitlearn y el resto del <em>stack</em> que este libro recorre. La lección es que el valor de Python no está solo en el lenguaje, sino en la <em>pila</em> de herramientas interoperables que lo rodean.</p>
+</section>
+<section id="breve-historia-del-python-científico" class="level3">
+<h3 class="anchored" data-anchor-id="breve-historia-del-python-científico">Breve historia del Python científico</h3>
+<p>Merece la pena conocer, en pocas líneas, cómo se formó esta pila, porque explica su forma actual. A finales de los años noventa surgió <code>Numeric</code>, la primera biblioteca de arrays, que tras una escisión y una reunificación se convirtió en el NumPy moderno <span class="citation" data-cites="harris2020numpy">(<a href="#ref-harris2020numpy" role="doc-biblioref"><span class="nocase">Harris et&nbsp;al.</span> 2020</a>)</span>, la base numérica de todo lo demás. En 2001, <span class="citation" data-cites="perez2007ipython">Pérez y Granger (<a href="#ref-perez2007ipython" role="doc-biblioref">2007</a>)</span> inició <code>IPython</code>, el intérprete interactivo que años después daría lugar al proyecto Jupyter <span class="citation" data-cites="kluyver2016jupyter">(<a href="#ref-kluyver2016jupyter" role="doc-biblioref"><span class="nocase">Kluyver et&nbsp;al.</span> 2016</a>)</span> y a los <em>notebooks</em>. Sobre NumPy crecieron SciPy (algoritmos científicos), matplotlib (visualización, cap.&nbsp;12), scikitlearn (aprendizaje automático, cap.&nbsp;14) y, a partir de 2008, pandas (análisis tabular, cap.&nbsp;8), creado por Wes McKinney <span class="citation" data-cites="mckinney2022python">(<a href="#ref-mckinney2022python" role="doc-biblioref">McKinney 2022</a>)</span>. La característica común de esta historia es la <em>interoperabilidad</em>: cada pieza se construyó sobre las anteriores y comparte con ellas la representación de los datos, de modo que hoy pandas, NumPy, scikitlearn y las incorporaciones más recientes —polars, Arrow, DuckDB (cap.&nbsp;9)— encajan sin fricción. Aprender la pila no es aprender bibliotecas sueltas, sino un ecosistema que habla un idioma común.</p>
+</section>
+<section id="versiones-de-python-y-su-cadencia" class="level3">
+<h3 class="anchored" data-anchor-id="versiones-de-python-y-su-cadencia">Versiones de Python y su cadencia</h3>
+<p>Python publica una versión mayor nueva cada octubre, y cada una recibe soporte durante unos cinco años. La tabla&nbsp;1.1 resume las relevantes en el momento de escribir (principios de 2026). Elegir versión no es un capricho: condiciona qué sintaxis puedes usar y qué mejoras de rendimiento obtienes.</p>
+<table class="caption-top table">
+<caption><strong>Versiones de Python relevantes en 2026.</strong> Novedades destacadas de cada versión para ciencia de datos. Las fechas son de publicación de la versión estable.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Versión</th>
+<th style="text-align: left;">Año</th>
+<th style="text-align: left;">Novedad destacada</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">3.10</td>
+<td style="text-align: left;">2021</td>
+<td style="text-align: left;"><code>match</code>/<code>case</code>; uniones de tipo con <code>|</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3.11</td>
+<td style="text-align: left;">2022</td>
+<td style="text-align: left;">mejoras de velocidad (<span class="math inline">\(\sim\)</span><!-- -->10–60 % frente a 3.10)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3.12</td>
+<td style="text-align: left;">2023</td>
+<td style="text-align: left;">sintaxis de genéricos (PEP 695); mensajes de error mejores</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3.13</td>
+<td style="text-align: left;">2024</td>
+<td style="text-align: left;">intérprete sin GIL <em>experimental</em> (PEP 703); JIT experimental</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">3.14</td>
+<td style="text-align: left;">2025</td>
+<td style="text-align: left;">maduración del <em>free-threading</em> y del JIT</td>
+</tr>
+</tbody>
+</table>
+<p>La novedad de fondo más importante de este ciclo es el trabajo para hacer <em>opcional</em> el <em>Global Interpreter Lock</em> (GIL), el cerrojo que históricamente ha serializado la ejecución de <em>bytecode</em> y ha limitado el paralelismo con hilos <span class="citation" data-cites="pep703">(<a href="#ref-pep703" role="doc-biblioref">Gross 2023</a>)</span>. Para el cómputo numérico masivo la palanca sigue siendo la vectorización (cap.&nbsp;7), pero un Python que pueda usar varios núcleos con hilos abre posibilidades que maduran en 2025–2026.</p>
+</section>
+<section id="el-repl-y-el-primer-programa" class="level3">
+<h3 class="anchored" data-anchor-id="el-repl-y-el-primer-programa">El REPL y el primer programa</h3>
+<p>Ejecutar <code>python</code> sin argumentos abre el <strong>REPL</strong> (<em>Read–Eval– Print Loop</em>): un diálogo donde escribes una expresión, el intérprete la evalúa y te muestra el resultado. Es el laboratorio para probar ideas sueltas. La versión enriquecida, <code>IPython</code> <span class="citation" data-cites="perez2007ipython">(<a href="#ref-perez2007ipython" role="doc-biblioref">Pérez y Granger 2007</a>)</span>, añade autocompletado, ayuda integrada y las «funciones mágicas» (<code>%timeit</code>, <code>%run</code>) que usaremos para medir.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">2</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="dv">4</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="st">"dato"</span> <span class="op">*</span> <span class="dv">3</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">'datodatodato'</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="op">&gt;&gt;&gt;</span> <span class="im">import</span> math<span class="op">;</span> math.sqrt(<span class="dv">2</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fl">1.4142135623730951</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>El REPL es insustituible para explorar, pero <strong>no es donde vive el análisis</strong>: lo que se teclea en el REPL se pierde. El análisis vive en ficheros <code>.py</code> (<em>scripts</em>) o en <em>notebooks</em> (§1.5). Un primer <em>script</em>, <code>hola.py</code>, se ejecuta con <code>python hola.py</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># hola.py -- el primer programa, con una intencion minima de utilidad.</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> saludar(nombre: <span class="bu">str</span>) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Devuelve un saludo. Separar el 'que' del 'como' desde el principio."""</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"Hola, </span><span class="sc">{</span>nombre<span class="sc">}</span><span class="ss">. Empezamos a programar para datos."</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:       <span class="co"># solo al ejecutar el fichero, no al importarlo</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(saludar(<span class="st">"cientifica"</span>))</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La guarda <code>if __name__ == "__main__":</code> merece atención desde el principio. Todo fichero <code>.py</code> es a la vez un <strong>programa</strong> (se ejecuta) y un <strong>módulo</strong> (se importa). Cuando lo ejecutas directamente, Python fija la variable especial <code>__name__</code> al valor <code>"__main__"</code>; cuando lo importas desde otro fichero, <code>__name__</code> vale el nombre del módulo. La guarda hace que el bloque solo corra en el primer caso. Es la frontera entre «lo que este fichero hace» y «lo que este fichero ofrece a los demás», y es la base de que el código sea reutilizable sin efectos colaterales, una idea que la Parte&nbsp;II lleva hasta sus últimas consecuencias.</p>
+</section>
+</section>
+<section id="la-línea-de-comandos-para-datos" class="level2">
+<h2 class="anchored" data-anchor-id="la-línea-de-comandos-para-datos">La línea de comandos para datos</h2>
+<p>Antes de entrar en los entornos, conviene detenerse en una herramienta que un curso moderno suele dar por sabida y que rara vez lo está: la <strong>línea de comandos</strong> (o <em>shell</em>). No es un vestigio del pasado; es, para el trabajo con datos, un instrumento de una eficiencia que sorprende. Inspeccionar un fichero de diez gigabytes, contar cuántas líneas tiene, ver las primeras filas o filtrar las que contienen un patrón son tareas que la <em>shell</em> resuelve en segundos y sin cargar nada en memoria, mientras que abrirlas en un editor o en Python puede ser imposible o lentísimo.</p>
+<section id="navegación-y-manipulación-de-ficheros" class="level3">
+<h3 class="anchored" data-anchor-id="navegación-y-manipulación-de-ficheros">Navegación y manipulación de ficheros</h3>
+<p>Los comandos fundamentales caben en una mano: <code>pwd</code> (dónde estoy), <code>ls</code> (qué hay aquí), <code>cd</code> (cambiar de carpeta), <code>cp</code>, <code>mv</code>, <code>rm</code> (copiar, mover, borrar) y <code>mkdir</code> (crear carpeta). Con ellos y un editor ya se puede organizar un proyecto. Lo interesante empieza al inspeccionar datos:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" data-language="bash"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wc</span> <span class="at">-l</span> ventas.csv            <span class="co"># cuenta las lineas (¿cuantas filas tiene?)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-5</span> ventas.csv          <span class="co"># muestra las 5 primeras (¿que columnas hay?)</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span> <span class="at">-5</span> ventas.csv          <span class="co"># las 5 ultimas</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cut</span> <span class="at">-d,</span> <span class="at">-f2</span> ventas.csv      <span class="co"># extrae la 2.a columna (separador coma)</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="tuberías-componer-herramientas-pequeñas" class="level3">
+<h3 class="anchored" data-anchor-id="tuberías-componer-herramientas-pequeñas">Tuberías: componer herramientas pequeñas</h3>
+<p>La idea potente de la <em>shell</em> —la filosofía de Unix— es que cada herramienta hace <em>una</em> cosa bien y se <em>componen</em> con <strong>tuberías</strong> (<em>pipes</em>, el símbolo <code>|</code>), que conectan la salida de una con la entrada de la siguiente. Así, una pregunta como «¿cuántas categorías distintas hay en la columna 3, y cuál es la más frecuente?» se responde encadenando cuatro herramientas, sin escribir un programa:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" data-language="bash"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extrae la columna 3, ordena, cuenta duplicados y ordena por frecuencia</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cut</span> <span class="at">-d,</span> <span class="at">-f3</span> ventas.csv <span class="kw">|</span> <span class="fu">sort</span> <span class="kw">|</span> <span class="fu">uniq</span> <span class="at">-c</span> <span class="kw">|</span> <span class="fu">sort</span> <span class="at">-rn</span> <span class="kw">|</span> <span class="fu">head</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cada eslabón es trivial; la composición es expresiva. Esta forma de pensar —herramientas pequeñas y componibles— reaparece en las expresiones de polars (cap.&nbsp;9) y en el estilo funcional del capítulo&nbsp;3. La <strong>redirección</strong> completa el cuadro: <code>&gt;</code> guarda la salida en un fichero y <code>&gt;&gt;</code> la añade al final.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" data-language="bash"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span> <span class="st">"2026-01"</span> ventas.csv <span class="op">&gt;</span> enero.csv    <span class="co"># filtra las filas de enero a un fichero</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="variables-bucles-y-automatización" class="level3">
+<h3 class="anchored" data-anchor-id="variables-bucles-y-automatización">Variables, bucles y automatización</h3>
+<p>La <em>shell</em> no es solo para comandos sueltos: es un lenguaje. Tiene variables (<code>f=ventas.csv</code>), bucles (<code>for f in *.csv; do ...; done</code>) y la posibilidad de guardar una secuencia de comandos en un fichero <code>.sh</code> para reejecutarla. Esto la convierte en la herramienta natural para <em>automatizar</em> tareas repetitivas: procesar en lote todos los ficheros de una carpeta, encadenar los pasos de un análisis, lanzar una descarga cada noche. Un ejemplo que aplica el mismo comando a muchos ficheros sin repetirlo a mano:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-language="bash"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> f <span class="kw">in</span> datos/crudos/<span class="pp">*</span>.csv<span class="kw">;</span> <span class="cf">do</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="bu">echo</span> <span class="st">"</span><span class="va">$f</span><span class="st">: </span><span class="va">$(</span><span class="fu">wc</span> <span class="at">-l</span> <span class="op">&lt;</span> <span class="st">"</span><span class="va">$f</span><span class="st">"</span><span class="va">)</span><span class="st"> filas"</span>   <span class="co"># cuenta las filas de cada CSV de la carpeta</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">done</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cuando estos pequeños automatismos crecen, se consolidan en un <code>Makefile</code> o en un gestor de flujos (§1.9), que orquesta el análisis completo con un solo comando. La frontera con Python es de grado, no de tipo: la <em>shell</em> pega herramientas y automatiza; Python transforma con lógica de datos. Saber dónde está esa frontera —y no forzar a ninguna de las dos a hacer el trabajo de la otra— es señal de oficio.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="Avanzado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Avanzado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>La <em>shell</em> no sustituye a Python; se complementan. La regla práctica: para <em>inspeccionar</em> (contar, mirar, filtrar rápido) y para <em>orquestar</em> (encadenar los pasos de un análisis en un <code>Makefile</code>), la línea de comandos es imbatible; para <em>transformar</em> con lógica de datos —tipos, uniones, agregaciones—, Python y sus bibliotecas. Un científico de datos competente se mueve con soltura entre ambos mundos y sabe cuándo cada uno es la herramienta correcta.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="entornos-aislados-y-gestión-de-dependencias" class="level2">
+<h2 class="anchored" data-anchor-id="entornos-aislados-y-gestión-de-dependencias">Entornos aislados y gestión de dependencias</h2>
+<p>Aquí se separa el aficionado del profesional. Un principiante instala las bibliotecas «en el sistema» con <code>pip install pandas</code> y, tarde o temprano, un proyecto necesita <code>pandas</code> 1.5 mientras otro necesita <code>pandas</code> 2.2, ambos no pueden coexistir globalmente, y todo se rompe. El problema tiene nombre —el «infierno de dependencias»— y solución universal: el <strong>entorno virtual</strong>, una carpeta que contiene una copia aislada del intérprete y de las bibliotecas de <em>un</em> proyecto.</p>
+<section id="el-aislamiento-en-la-práctica" class="level3">
+<h3 class="anchored" data-anchor-id="el-aislamiento-en-la-práctica">El aislamiento en la práctica</h3>
+<p>La idea del entorno virtual es sencilla pero conviene visualizarla (figura&nbsp;1.3). Sin aislamiento, todos los proyectos comparten un único conjunto global de bibliotecas: instalar la versión que necesita uno rompe a los demás, y no hay forma de que dos proyectos usen versiones distintas de la misma biblioteca. Con aislamiento, cada proyecto tiene su propia carpeta de dependencias, independiente de las demás y del sistema: un proyecto puede usar <code>pandas</code> 1.5 mientras el de al lado usa 2.2, sin conflicto. Es la diferencia entre un armario compartido donde todo se pisa y un cajón por proyecto.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/cap01/fig_03.svg" class="img-fluid figure-img"></p>
+<figcaption><strong>Figura&nbsp;1.3.</strong> <strong>Entorno global frente a entornos por proyecto.</strong> Sin aislamiento, un único conjunto global de bibliotecas provoca conflictos; con un entorno por proyecto, cada uno fija sus versiones sin pisar a los demás.</figcaption>
+</figure>
+</div>
+</section>
+<section id="el-flujo-clásico-venv-y-pip" class="level3">
+<h3 class="anchored" data-anchor-id="el-flujo-clásico-venv-y-pip">El flujo clásico: <code>venv</code> y <code>pip</code></h3>
+<p>La herramienta clásica de la biblioteca estándar es <code>venv</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" data-language="bash"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">-m</span> venv .venv            <span class="co"># crea el entorno en la carpeta .venv</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">source</span> .venv/bin/activate       <span class="co"># activalo (Linux/macOS)</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># .venv\Scripts\activate        # (Windows PowerShell)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install pandas numpy        <span class="co"># instala DENTRO del entorno, aislado</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> freeze <span class="op">&gt;</span> requirements.txt   <span class="co"># anota lo instalado (con versiones exactas)</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Este flujo funciona y es importante conocerlo porque está en todas partes. Su debilidad es que <code>pip freeze</code> congela un momento, pero no distingue lo que tu código <em>necesita</em> de lo que se instaló <em>de paso</em>, y no registra cómo resolver el árbol de dependencias de forma reproducible en otra máquina.</p>
+</section>
+<section id="la-estandarización-pyproject.toml" class="level3">
+<h3 class="anchored" data-anchor-id="la-estandarización-pyproject.toml">La estandarización: <code>pyproject.toml</code></h3>
+<p>Durante años, cada herramienta de empaquetado de Python inventó su propio fichero de configuración. La comunidad convergió en un estándar único, <code>pyproject .toml</code>, que declara los metadatos del proyecto y sus dependencias de forma independiente de la herramienta <span class="citation" data-cites="pep621">(<a href="#ref-pep621" role="doc-biblioref"><span class="nocase">Ingram et&nbsp;al.</span> 2020</a>)</span>. Es el fichero que hoy describe qué es tu proyecto y qué necesita:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>[project]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>name <span class="op">=</span> <span class="st">"analisis-ventas"</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>version <span class="op">=</span> <span class="st">"0.1.0"</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>requires<span class="op">-</span>python <span class="op">=</span> <span class="st">"&gt;=3.12"</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>dependencies <span class="op">=</span> [<span class="st">"pandas&gt;=2.2"</span>, <span class="st">"numpy&gt;=2.0"</span>, <span class="st">"scikit-learn&gt;=1.5"</span>]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="estado-del-arte-2026-uv" class="level3">
+<h3 class="anchored" data-anchor-id="estado-del-arte-2026-uv">Estado del arte 2026: <code>uv</code></h3>
+<p>El ecosistema ha convergido, en 2025–2026, hacia <code>uv</code>, un gestor de proyectos y paquetes escrito en Rust que reemplaza y unifica <code>pip</code>, <code>venv</code>, <code>pip-tools</code> y buena parte de <code>poetry</code>, con una velocidad de resolución e instalación de otro orden de magnitud <span class="citation" data-cites="uvdocs">(<a href="#ref-uvdocs" role="doc-biblioref">Astral 2025b</a>)</span>. El flujo de un proyecto nuevo:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" data-language="bash"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> init analisis-ventas          <span class="co"># crea el proyecto con pyproject.toml</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> analisis-ventas</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add pandas polars scikit-learn   <span class="co"># anade dependencias y actualiza el lock</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python analisis.py        <span class="co"># ejecuta dentro del entorno, sin activarlo</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La pieza clave para la reproducibilidad es el <strong>fichero de bloqueo</strong> (<code>uv.lock</code>): registra la versión <em>exacta</em> de cada dependencia y de cada dependencia de tus dependencias, con su <em>hash</em>. Quien clone tu proyecto y ejecute <code>uv sync</code> obtendrá el entorno idéntico, bit a bit, al tuyo. Esto convierte el tercer pilar de la reproducibilidad —el entorno— en algo verificable, no en una promesa.</p>
+</section>
+<section id="el-otro-ecosistema-conda-y-mamba" class="level3">
+<h3 class="anchored" data-anchor-id="el-otro-ecosistema-conda-y-mamba">El otro ecosistema: <code>conda</code> y <code>mamba</code></h3>
+<p>En cómputo científico con dependencias no-Python (bibliotecas de C, CUDA para GPU), el gestor <code>conda</code> —y su reimplementación rápida <code>mamba</code>— ha sido durante años la elección, porque gestiona también esos binarios del sistema, no solo paquetes de Python. La tabla&nbsp;1.2 sitúa cada herramienta. La recomendación de este libro es pragmática: <code>uv</code> para proyectos de Python puro (lo habitual), y <code>conda</code>/<code>mamba</code> cuando entran en juego GPU o bibliotecas del sistema difíciles de instalar de otro modo.</p>
+<table class="caption-top table">
+<caption><strong>Gestores de entornos y dependencias.</strong> Herramientas de gestión de entornos y dependencias, y para qué brilla cada una. El <em>lockfile</em> es la clave de la reproducibilidad del entorno.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Herramienta</th>
+<th style="text-align: left;">Fortaleza</th>
+<th style="text-align: left;">Lockfile</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>venv</code>+<code>pip</code></td>
+<td style="text-align: left;">estándar, en todas partes</td>
+<td style="text-align: left;">no (solo <code>pip freeze</code>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>uv</code></td>
+<td style="text-align: left;">rapidísimo, proyecto+deps</td>
+<td style="text-align: left;">sí (<code>uv.lock</code>)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>poetry</code></td>
+<td style="text-align: left;">gestión de proyecto madura</td>
+<td style="text-align: left;">sí (<code>poetry.lock</code>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>conda</code>/<code>mamba</code></td>
+<td style="text-align: left;">binarios del sistema, GPU</td>
+<td style="text-align: left;">sí (<code>environment.yml</code> exportado)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="declarado-frente-a-resuelto-versiones-y-semver" class="level3">
+<h3 class="anchored" data-anchor-id="declarado-frente-a-resuelto-versiones-y-semver">Declarado frente a resuelto: versiones y <em>semver</em></h3>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="Avanzado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Avanzado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Un <code>requirements.txt</code> con <code>pandas&gt;=2.0</code> no fija nada: mañana <code>pandas</code> 2.3 puede cambiar un comportamiento y tu resultado cambia sin que hayas tocado una línea. Aquí opera el <em>versionado semántico</em> <span class="citation" data-cites="semver">(<a href="#ref-semver" role="doc-biblioref">Preston-Werner 2013</a>)</span>: una versión <code>MAYOR.MENOR.PARCHE</code> promete que un cambio de <code>PARCHE</code> corrige errores sin romper nada, uno de <code>MENOR</code> añade sin romper, y uno de <code>MAYOR</code> puede romper. En la práctica no siempre se respeta, de modo que la única garantía real es el <em>lockfile</em>. La distinción esencial: declaras <em>rangos</em> de lo que tu código necesita (en <code>pyproject.toml</code>) y entregas <em>versiones exactas</em> de todo el árbol resuelto (en el lock). Los dos ficheros, juntos, cuentan la historia completa; uno solo, no.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="editores-notebooks-y-ejecución-determinista" class="level2">
+<h2 class="anchored" data-anchor-id="editores-notebooks-y-ejecución-determinista">Editores, notebooks y ejecución determinista</h2>
+<p>Hay dos formas de escribir código de datos, y no compiten: se complementan.</p>
+<section id="el-script-y-el-editor" class="level3">
+<h3 class="anchored" data-anchor-id="el-script-y-el-editor">El script y el editor</h3>
+<p>El <em>script</em> (<code>.py</code>) es un programa lineal que se ejecuta de principio a fin. Es la forma canónica de todo lo que debe ser reproducible y automatizable: una descarga de datos, un preprocesado, el entrenamiento de un modelo. Se edita con un editor de código —<strong>VS Code</strong> es el estándar de facto en 2026, con su extensión de Python— o con cualquier editor que hable el <em>Language Server Protocol</em> (LSP), el protocolo que da autocompletado, comprobación de tipos al vuelo y navegación por el código con independencia del editor.</p>
+</section>
+<section id="el-editor-moderno-y-sus-superpoderes" class="level3">
+<h3 class="anchored" data-anchor-id="el-editor-moderno-y-sus-superpoderes">El editor moderno y sus superpoderes</h3>
+<p>Merece la pena detenerse en lo que un editor de código moderno aporta, porque quien viene de escribir en un procesador de textos rara vez lo imagina. La pieza clave es el <em>Language Server Protocol</em> (LSP), un servidor que analiza tu código mientras lo escribes y ofrece, con independencia del editor, un puñado de capacidades que transforman la productividad: <strong>autocompletado</strong> consciente del tipo (al teclear <code>df.</code> aparecen los métodos de un <code>DataFrame</code>, no una lista genérica); <strong>ir a la definición</strong> de cualquier función con una pulsación, para leer qué hace de verdad; <strong>comprobación de tipos y errores al vuelo</strong>, que subraya un fallo antes de ejecutar; <strong>renombrado seguro</strong> de una variable en todo el proyecto a la vez; y <strong>documentación emergente</strong> que muestra el <em>docstring</em> de una función sin salir del sitio. A esto se añade el depurador integrado (§1.6.1) y la integración con Git, el <em>linter</em> y el formateador (§1.6.4), todo en la misma ventana. VS Code reúne estas piezas de fábrica, pero cualquier editor que hable LSP —Neovim, editores de JetBrains— ofrece lo mismo. La consecuencia práctica es que buena parte de los errores se detectan y se corrigen <em>mientras se escribe</em>, no al ejecutar; invertir una tarde en aprender estos atajos se paga en pocos días.</p>
+</section>
+<section id="el-notebook-exploración-y-narración" class="level3">
+<h3 class="anchored" data-anchor-id="el-notebook-exploración-y-narración">El notebook: exploración y narración</h3>
+<p>El <em>notebook</em> (<code>.ipynb</code>) intercala celdas de código, su salida (tablas, gráficos) y prosa en Markdown. Es el instrumento de la <strong>exploración</strong> y de la <strong>narración</strong>, y su formato de publicación reproducible fue definido por <span class="citation" data-cites="kluyver2016jupyter"><span class="nocase">Kluyver et&nbsp;al.</span> (<a href="#ref-kluyver2016jupyter" role="doc-biblioref">2016</a>)</span>. Se ha convertido en la herramienta de elección de buena parte de los científicos de datos <span class="citation" data-cites="perkel2018jupyter">(<a href="#ref-perkel2018jupyter" role="doc-biblioref">Perkel 2018</a>)</span>, y sus entornos son Jupyter/JupyterLab, Google Colab (Jupyter en la nube, sin instalar nada) y VS Code. Por debajo, un <em>kernel</em> ejecuta el código y devuelve resultados a la interfaz, una arquitectura clienteservidor que permite, por ejemplo, editar en tu portátil y ejecutar en un servidor con GPU.</p>
+<p>Esa separación entre la <em>interfaz</em> (donde escribes) y el <em>kernel</em> (donde se ejecuta el código) es la clave del diseño de Jupyter <span class="citation" data-cites="kluyver2016jupyter">(<a href="#ref-kluyver2016jupyter" role="doc-biblioref"><span class="nocase">Kluyver et&nbsp;al.</span> 2016</a>)</span> y explica varias de sus virtudes y de sus trampas. Su virtud: el mismo cuaderno puede ejecutarse con un kernel de Python, de R o de Julia, y el kernel puede vivir en otra máquina, de modo que un análisis pesado corre en un servidor mientras tú lo controlas desde el navegador. Su trampa: el kernel mantiene un estado —las variables definidas hasta ahora— que <em>no</em> está en el texto del cuaderno, sino en la memoria del proceso; es exactamente ese estado invisible el que, al reordenar o reejecutar celdas, produce los resultados fantasma de §1.5.4. Entender que el cuaderno que ves y el estado que lo produjo son dos cosas distintas es el primer paso para no dejarse engañar por él.</p>
+</section>
+<section id="la-trampa-del-estado-oculto" class="level3">
+<h3 class="anchored" data-anchor-id="la-trampa-del-estado-oculto">La trampa del estado oculto</h3>
+<p>El notebook tiene una <strong>trampa</strong> que hay que conocer desde el primer día: sus celdas pueden ejecutarse en cualquier orden, y el estado (las variables) es persistente y oculto. Puedes ver en pantalla un resultado que ya no se correspondería con el código actual, porque lo generó una versión anterior de una celda que luego cambiaste. Esta no es una preocupación teórica: es, precisamente, la causa de que tantos <em>notebooks</em> publicados no se reproduzcan <span class="citation" data-cites="pimentel2019large">(<a href="#ref-pimentel2019large" role="doc-biblioref">Pimentel et&nbsp;al. 2019</a>)</span>. Un notebook solo es fiable si se ejecuta <strong>limpio, de arriba abajo, en un intérprete reiniciado</strong>. Se comprueba así:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" data-language="bash"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ejecuta todas las celdas en orden en un kernel nuevo; falla si alguna peta</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="ex">jupyter</span> nbconvert <span class="at">--to</span> notebook <span class="at">--execute</span> <span class="at">--inplace</span> exploracion.ipynb</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Para reproducibilidad y versionado, tres herramientas del ecosistema ayudan: <code>nbconvert</code> ejecuta y convierte; <code>papermill</code> parametriza un notebook (útil para barridos con distintas semillas); y <code>jupytext</code> empareja cada <code>.ipynb</code> con un <code>.py</code> legible, de modo que el control de versiones vea texto y no el JSON ilegible del notebook.</p>
+</section>
+<section id="notebooks-reactivos-y-publicación-literaria" class="level3">
+<h3 class="anchored" data-anchor-id="notebooks-reactivos-y-publicación-literaria">Notebooks reactivos y publicación literaria</h3>
+<p>La evolución de los cuadernos apunta a resolver la trampa de raíz <span class="citation" data-cites="perkel2021reactive">(<a href="#ref-perkel2021reactive" role="doc-biblioref">Perkel 2021</a>)</span>. <code>marimo</code> <span class="citation" data-cites="marimodocs">(<a href="#ref-marimodocs" role="doc-biblioref"><span class="nocase">marimo</span> 2025</a>)</span> es un entorno de notebook que guarda el cuaderno como un fichero <code>.py</code> normal (versionable con <code>git</code>, sin el ruido de JSON) y mantiene un <strong>grafo de dependencias</strong> entre celdas: al cambiar una celda se reejecutan automáticamente las que dependen de ella y ninguna otra, de modo que el estado oculto e inconsistente deja de ser posible <em>por construcción</em>. Para exploración reproducible es una mejora sustancial sobre Jupyter; para producción, el <em>script</em> sigue mandando.</p>
+<p>La idea de fondo es antigua y luminosa: la <em>programación literaria</em> de <span class="citation" data-cites="knuth1984literate">Knuth (<a href="#ref-knuth1984literate" role="doc-biblioref">1984</a>)</span>, que propone escribir programas como documentos dirigidos a personas, entrelazando prosa y código. Los notebooks son su encarnación moderna, y sistemas como <code>Quarto</code> <span class="citation" data-cites="quartodocs">(<a href="#ref-quartodocs" role="doc-biblioref">Posit 2025</a>)</span> llevan la idea al informe reproducible: un documento que mezcla texto, código y sus resultados, y que se <em>regenera</em> con un comando cuando los datos cambian —exactamente el principio de «una fuente, varios renders» que gobierna este libro.</p>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="Avanzado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Avanzado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Regla operativa.</strong> Explora en notebook; cuando un fragmento produzca algo que quieras conservar —una cifra del informe, una figura, un preprocesado—, <strong>consolídalo en un <em>script</em></strong> determinista con semilla fija. El notebook es el cuaderno de laboratorio; el <em>script</em>, el protocolo publicado. Mezclar los dos roles —usar el notebook como si fuera producción— es la fuente número uno de análisis que funcionan «en mi máquina» y en ninguna otra.</p>
+</div>
+</div>
+</section>
+<section id="cuándo-el-script-cuándo-el-notebook" class="level3">
+<h3 class="anchored" data-anchor-id="cuándo-el-script-cuándo-el-notebook">Cuándo el script, cuándo el notebook</h3>
+<p>Ninguno de los dos formatos es «mejor»: sirven a fases distintas del trabajo, como resume la tabla&nbsp;1.3. La regla práctica, que este libro sigue, es usar el notebook para <em>descubrir</em> y el <em>script</em> para <em>fijar</em>: lo que se descubre en el cuaderno y merece conservarse se traslada a un módulo determinista.</p>
+<table class="caption-top table">
+<caption><strong>Script frente a notebook.</strong> Dos formatos complementarios. El notebook brilla explorando; el <em>script</em>, produciendo resultados reproducibles.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Criterio</th>
+<th style="text-align: left;">Notebook</th>
+<th style="text-align: left;">Script</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Propósito</td>
+<td style="text-align: left;">explorar, narrar</td>
+<td style="text-align: left;">producir, automatizar</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ejecución</td>
+<td style="text-align: left;">por celdas, no lineal</td>
+<td style="text-align: left;">de principio a fin</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Reproducibilidad</td>
+<td style="text-align: left;">frágil (estado oculto)</td>
+<td style="text-align: left;">robusta</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Control de versiones</td>
+<td style="text-align: left;">difícil (JSON)</td>
+<td style="text-align: left;">natural (texto)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Automatización</td>
+<td style="text-align: left;">limitada</td>
+<td style="text-align: left;">directa (<code>Makefile</code>, CI)</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="depuración-registro-y-calidad-de-código" class="level2">
+<h2 class="anchored" data-anchor-id="depuración-registro-y-calidad-de-código">Depuración, registro y calidad de código</h2>
+<p>El entorno de trabajo no es solo dónde se ejecuta el código, sino también con qué herramientas se inspecciona cuando falla y se mantiene sano cuando crece. Estas prácticas se desarrollan en el capítulo&nbsp;16, pero pertenecen al flujo desde el primer día, así que las presentamos aquí en su forma esencial.</p>
+<section id="depurar-mirar-dentro-del-programa" class="level3">
+<h3 class="anchored" data-anchor-id="depurar-mirar-dentro-del-programa">Depurar: mirar dentro del programa</h3>
+<p>Cuando un programa no hace lo que esperas, la tentación es sembrar el código de <code>print</code>. Funciona a medias, pero hay algo mejor: el <strong>depurador</strong>, que detiene la ejecución en un punto y te deja inspeccionar el estado. En Python basta una línea:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalizar(valores):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    lo, hi <span class="op">=</span> <span class="bu">min</span>(valores), <span class="bu">max</span>(valores)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">breakpoint</span>()                  <span class="co"># la ejecucion se detiene aqui (pdb)</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [(v <span class="op">-</span> lo) <span class="op">/</span> (hi <span class="op">-</span> lo) <span class="cf">for</span> v <span class="kw">in</span> valores]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Al llegar a <code>breakpoint()</code>, el intérprete abre el depurador <code>pdb</code>: se pueden imprimir variables, ejecutar una línea (<code>n</code>), entrar en una función (<code>s</code>) o continuar (<code>c</code>). VS Code y los notebooks integran depuradores gráficos con la misma lógica. Aprender a depurar —en vez de adivinar— es una de las habilidades que más tiempo ahorran a lo largo de una carrera.</p>
+</section>
+<section id="registrar-en-vez-de-imprimir" class="level3">
+<h3 class="anchored" data-anchor-id="registrar-en-vez-de-imprimir">Registrar en vez de imprimir</h3>
+<p>Para un <em>script</em> que se ejecutará muchas veces, el <code>print</code> disperso es ruido. El módulo <code>logging</code> de la biblioteca estándar da mensajes con nivel de severidad (<code>DEBUG</code>, <code>INFO</code>, <code>WARNING</code>, <code>ERROR</code>), que se pueden filtrar, formatear y redirigir a un fichero sin tocar el código:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> logging</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>logging.basicConfig(level<span class="op">=</span>logging.INFO,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>                    <span class="bu">format</span><span class="op">=</span><span class="st">"</span><span class="sc">%(asctime)s</span><span class="st"> </span><span class="sc">%(levelname)s</span><span class="st"> </span><span class="sc">%(message)s</span><span class="st">"</span>)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>log <span class="op">=</span> logging.getLogger(<span class="va">__name__</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>log.info(<span class="st">"cargando datos..."</span>)        <span class="co"># se ve por defecto</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>log.debug(<span class="st">"forma del array: </span><span class="sc">%s</span><span class="st">"</span>, datos.shape)   <span class="co"># solo si level=DEBUG</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La diferencia con <code>print</code> no es cosmética: el registro distingue lo informativo de lo alarmante, se silencia o amplía con un solo parámetro, y deja un rastro fechado de qué hizo el programa —justo lo que la regla&nbsp;1 de <span class="citation" data-cites="sandve2013ten">Sandve et&nbsp;al. (<a href="#ref-sandve2013ten" role="doc-biblioref">2013</a>)</span> pide—.</p>
+</section>
+<section id="validar-raise-no-assert" class="level3">
+<h3 class="anchored" data-anchor-id="validar-raise-no-assert">Validar: <code>raise</code>, no <code>assert</code></h3>
+<p>Un programa de datos debe fallar pronto y con claridad ante una entrada imposible. La forma robusta de validar es lanzar una excepción con <code>raise</code> y un mensaje útil (el mecanismo completo se ve en el capítulo&nbsp;3):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dividir(a, b):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> b <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"el divisor no puede ser cero"</span>)   <span class="co"># validacion robusta</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="op">/</span> b</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Conviene evitar <code>assert</code> para validar entradas: las aserciones desaparecen si el programa se ejecuta optimizado (<code>python -O</code>), de modo que una comprobación con <code>assert</code> puede evaporarse justo en producción. El <code>assert</code> es para comprobaciones internas de desarrollo, no para contratos.</p>
+</section>
+<section id="formato-estilo-y-tipos-ruff-y-mypy" class="level3">
+<h3 class="anchored" data-anchor-id="formato-estilo-y-tipos-ruff-y-mypy">Formato, estilo y tipos: <code>ruff</code> y <code>mypy</code></h3>
+<p>El código de datos se lee más veces de las que se escribe, y la consistencia de estilo reduce errores. En 2026, el estándar es <code>ruff</code> <span class="citation" data-cites="ruffdocs">(<a href="#ref-ruffdocs" role="doc-biblioref">Astral 2025a</a>)</span>, un <em>linter</em> y formateador escrito en Rust que reemplaza a un puñado de herramientas anteriores (<code>flake8</code>, <code>black</code>, <code>isort</code>) y corre casi instantáneamente:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" data-language="bash"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">ruff</span> format src/         <span class="co"># da formato consistente (sangria, comillas, lineas)</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ruff</span> check src/          <span class="co"># detecta errores, imports sin usar, malos olores</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>A esto se añade <code>mypy</code>, que verifica los tipos anotados (cap.&nbsp;3) <em>antes</em> de ejecutar, cazando una clase entera de errores en el editor. Integrar <code>ruff</code> y <code>mypy</code> —idealmente en un <em>hook</em> de <em>pre-commit</em> o en la integración continua— hace que el código nunca degrade: cada cambio se formatea, se comprueba y se tipa automáticamente. Es infraestructura invisible que mantiene sano un proyecto a lo largo del tiempo, y su coste es casi nulo.</p>
+</section>
+<section id="estilo-pep-8-y-el-zen-de-python" class="level3">
+<h3 class="anchored" data-anchor-id="estilo-pep-8-y-el-zen-de-python">Estilo: PEP 8 y el Zen de Python</h3>
+<p>La consistencia de estilo no es una cuestión estética, sino de legibilidad, y la legibilidad es corrección a largo plazo. La comunidad de Python la codificó en la guía <strong>PEP 8</strong> <span class="citation" data-cites="pep8">(<a href="#ref-pep8" role="doc-biblioref">Rossum et&nbsp;al. 2001</a>)</span>: sangría de cuatro espacios, líneas que no se alargan sin control, nombres descriptivos en <code>snake_case</code> para funciones y variables, espacios alrededor de los operadores. No hace falta memorizarla: <code>ruff format</code> (§1.6.4) la aplica sola. Más profunda es la filosofía del lenguaje, el <em>Zen de Python</em> <span class="citation" data-cites="pep20">(<a href="#ref-pep20" role="doc-biblioref">Peters 2004</a>)</span>, accesible tecleando <code>import this</code>: «explícito es mejor que implícito», «simple es mejor que complejo», «la legibilidad cuenta». Son aforismos, pero orientan mil decisiones pequeñas de diseño, y en ciencia de datos —donde el código lo escribe a menudo quien no es programador de formación— valen su peso en oro.</p>
+</section>
+</section>
+<section id="control-de-versiones-con-git" class="level2">
+<h2 class="anchored" data-anchor-id="control-de-versiones-con-git">Control de versiones con Git</h2>
+<p><strong>Git</strong> es el sistema de control de versiones estándar, y en un proyecto de datos no es opcional: es lo que registra qué código produjo qué resultado, permite volver atrás y hace posible el trabajo en equipo <span class="citation" data-cites="blischak2016git">(<a href="#ref-blischak2016git" role="doc-biblioref">Blischak et&nbsp;al. 2016</a>)</span>. Lo esencial cabe en pocos comandos, pero la disciplina importa más que los comandos.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" data-language="bash"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add src/ pyproject.toml README.md   <span class="co"># codigo y config, NO datos ni artefactos</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"cap01: primer script y estructura del proyecto"</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> switch <span class="at">-c</span> cap01-entorno              <span class="co"># una rama por linea de trabajo</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>En datos hay una regla propia: <strong>no se versionan los datos pesados ni los artefactos generados</strong> (PDF, modelos entrenados, salidas). El fichero <code>.gitignore</code> los excluye; lo que se versiona es el <em>código que los produce</em>. Los datos crudos, si son grandes, se gestionan aparte (con <em>Git LFS</em>, DVC o un almacén externo con un identificador de versión), de modo que el repositorio quede ligero y el historial sea legible. La figura&nbsp;1.4 ilustra el flujo mínimo por ramas: se trabaja en una rama por tarea y se fusiona a la principal solo lo que compila y funciona.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/cap01/fig_04.svg" class="img-fluid figure-img"></p>
+<figcaption><strong>Figura&nbsp;1.4.</strong> <strong>Flujo de ramas en Git.</strong> Se abre una rama por tarea desde <code>main</code>, se trabaja en ella (círculos naranjas) y se fusiona de vuelta cuando el trabajo compila y funciona. <code>main</code> siempre está sano.</figcaption>
+</figure>
+</div>
+<section id="buenos-mensajes-y-qué-no-versionar" class="level3">
+<h3 class="anchored" data-anchor-id="buenos-mensajes-y-qué-no-versionar">Buenos mensajes y qué no versionar</h3>
+<p>Un historial de Git vale tanto como sus mensajes. Un <em>commit</em> con mensaje «cambios» o «retoques» no dice nada a quien lo lea dentro de un año; uno con «<code>cap10: imputa ausentes de energy con la mediana por género</code>» cuenta qué se hizo y por qué. La convención práctica es un mensaje corto en imperativo, con un prefijo que sitúe el cambio, y <em>commits</em> pequeños y frecuentes, cada uno con una idea completa, en lugar de un único <em>commit</em> gigante al final del día. Igual de importante es <strong>qué no se versiona</strong>: el <code>.gitignore</code> excluye los datos pesados, los artefactos generados (PDF, modelos, figuras regenerables), los entornos virtuales (<code>.venv/</code>) y las cachés (<code>__pycache__/</code>). La regla mental: se versiona lo que <em>no</em> se puede regenerar —el código, la configuración, las decisiones—; lo que el código produce se deja fuera, porque volverá a producirse. Un repositorio limpio, con un historial legible, es tan parte de la reproducibilidad como el propio código.</p>
+</section>
+<section id="trabajo-en-equipo-y-revisión-de-código" class="level3">
+<h3 class="anchored" data-anchor-id="trabajo-en-equipo-y-revisión-de-código">Trabajo en equipo y revisión de código</h3>
+<p>Git no solo registra la historia: hace posible que varias personas trabajen sobre el mismo proyecto sin pisarse <span class="citation" data-cites="blischak2016git">(<a href="#ref-blischak2016git" role="doc-biblioref">Blischak et&nbsp;al. 2016</a>)</span>. El flujo habitual en equipos —y en el trabajo abierto— gira en torno a la <em>solicitud de integración</em> (<em>pull request</em> o <em>merge request</em>): quien propone un cambio lo hace en una rama y abre una solicitud para fusionarlo, que otras personas <strong>revisan</strong> antes de aceptar. La revisión de código no es un control burocrático; es donde se detectan errores, se comparte conocimiento y se mantiene la calidad. Para un proyecto de datos, revisar incluye una pregunta propia: ¿las cifras que este cambio produce son reproducibles y su procedencia es clara? Plataformas como GitHub o GitLab integran este flujo con la ejecución automática de pruebas (§1.14.2), de modo que ningún cambio se fusiona sin haber pasado los controles. La regla que cierra el círculo: <code>main</code> <em>siempre</em> funciona; no se fusiona nada que rompa la compilación o las pruebas.</p>
+</section>
+</section>
+<section id="contenedores-reproducibilidad-a-largo-plazo" class="level2">
+<h2 class="anchored" data-anchor-id="contenedores-reproducibilidad-a-largo-plazo">Contenedores: reproducibilidad a largo plazo</h2>
+<p>El <em>lockfile</em> fija las versiones de las bibliotecas de Python, pero no el sistema operativo, la versión de Python, ni las bibliotecas del sistema. Para una reproducibilidad a prueba del tiempo —poder recrear el entorno exacto dentro de cinco años— la herramienta es el <strong>contenedor</strong>. <span class="citation" data-cites="boettiger2015docker">Boettiger (<a href="#ref-boettiger2015docker" role="doc-biblioref">2015</a>)</span> introdujo Docker en la investigación reproducible con un argumento simple: un contenedor empaqueta <em>todo</em> el entorno (sistema, Python, bibliotecas) en una imagen versionada que corre igual en cualquier máquina. No todo proyecto lo necesita —para un análisis personal, el <code>uv.lock</code> basta—, pero cuando el resultado debe sobrevivir a cambios del sistema o desplegarse en un servidor (cap.&nbsp;16), el contenedor es la respuesta. La regla de proporción: usa el <em>lockfile</em> por defecto; añade el contenedor cuando la vida útil o el despliegue lo justifiquen.</p>
+<p>Un escenario concreto aclara la diferencia. Imagina que publicas un análisis con su <code>uv.lock</code> y, tres años después, alguien intenta reproducirlo: instala las mismas versiones exactas de las bibliotecas de Python, pero su sistema operativo trae una versión distinta de una biblioteca de C de la que depende NumPy, y algo se comporta de forma sutilmente distinta. El <em>lockfile</em> fijó el jardín, pero no el suelo sobre el que crece. El contenedor empaqueta también ese suelo —el sistema, las bibliotecas del sistema, la versión de Python— en una imagen que se puede archivar y volver a ejecutar idéntica dentro de años. Ese es su valor y, a la vez, su coste: una imagen ocupa cientos de megabytes y añade una capa de complejidad que no todo proyecto necesita. Reservarlo para cuando de verdad importa —un resultado que debe sobrevivir al tiempo, o un servicio que debe correr igual en producción (cap.&nbsp;16)— es la decisión sensata.</p>
+</section>
+<section id="anatomía-de-un-proyecto-reproducible" class="level2">
+<h2 class="anchored" data-anchor-id="anatomía-de-un-proyecto-reproducible">Anatomía de un proyecto reproducible</h2>
+<p>Un proyecto de datos no es un único fichero: es una estructura que separa datos de código, exploración de producción, y entrada de salida. Existen plantillas consensuadas —<em>Cookiecutter Data Science</em> <span class="citation" data-cites="cookiecutterds">(<a href="#ref-cookiecutterds" role="doc-biblioref">DrivenData 2025</a>)</span> es la más extendida— que evitan reinventar esta organización en cada proyecto. Una versión mínima y sensata, alineada con la de este libro, es la de la figura&nbsp;1.5.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/cap01/fig_05.svg" class="img-fluid figure-img"></p>
+<figcaption><strong>Figura&nbsp;1.5.</strong> <strong>Estructura de un proyecto de datos.</strong> Organización mínima de un proyecto reproducible: datos crudos intocables, código reutilizable en un paquete (<code>src/</code>) y programas ejecutables aparte (<code>scripts/</code>) que importan del paquete, nunca al revés.</figcaption>
+</figure>
+</div>
+<p>Cada carpeta tiene un papel único y no negociable, resumido en la tabla&nbsp;1.4. La disciplina de mantener esos papeles separados —datos aparte del código, exploración aparte de producción, entrada aparte de salida— es lo que permite que un proyecto crezca sin convertirse en un amasijo donde nadie encuentra nada.</p>
+<table class="caption-top table">
+<caption><strong>Carpetas de un proyecto y su papel.</strong> Cada directorio cumple un papel único; mezclarlos es el primer paso hacia un proyecto inmanejable.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Carpeta</th>
+<th style="text-align: left;">Papel</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>datos/crudos/</code></td>
+<td style="text-align: left;">datos originales, inmutables; se descargan una vez</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>datos/procesados/</code></td>
+<td style="text-align: left;">salidas de la limpieza; regenerables desde crudos</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>notebooks/</code></td>
+<td style="text-align: left;">exploración y narración; no producción</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>src/</code></td>
+<td style="text-align: left;">código reutilizable, como paquete importable</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>scripts/</code></td>
+<td style="text-align: left;">programas ejecutables que importan de <code>src/</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>tests/</code></td>
+<td style="text-align: left;">pruebas automatizadas del paquete</td>
+</tr>
+</tbody>
+</table>
+<p>Dos principios sostienen esta estructura. Primero, <strong>los datos crudos son sagrados</strong>: se descargan una vez, se guardan y no se tocan; toda limpieza produce ficheros <em>nuevos</em> en <code>procesados/</code>, de modo que siempre puedes rehacer el proceso desde el origen. Segundo, <strong>el código que se reutiliza vive en un paquete</strong> (<code>src/ventas/</code>) y el código que se ejecuta vive en <code>scripts/</code>; los <em>scripts</em> importan del paquete, nunca al revés. Esta separación, que ahora puede parecer burocracia, es la que permite en el capítulo&nbsp;16 poner pruebas automáticas al paquete sin ejecutar todo el análisis. La orquestación de los pasos —descargar, limpiar, entrenar, evaluar— se automatiza con un <code>Makefile</code> o con un gestor de flujos como <code>Snakemake</code> <span class="citation" data-cites="molder2021snakemake">(<a href="#ref-molder2021snakemake" role="doc-biblioref"><span class="nocase">Mölder et&nbsp;al.</span> 2021</a>)</span>, de modo que reproducir el análisis completo sea un solo comando.</p>
+</section>
+<section id="determinismo-y-aleatoriedad-reproducible" class="level2">
+<h2 class="anchored" data-anchor-id="determinismo-y-aleatoriedad-reproducible">Determinismo y aleatoriedad reproducible</h2>
+<p>El cuarto pilar de la reproducibilidad (figura&nbsp;1.1) es el más fácil de olvidar y el que más silenciosamente rompe un resultado: la <strong>aleatoriedad</strong>. Una partición entrenamiento/test, la inicialización de un modelo o un remuestreo <em>bootstrap</em> (cap.&nbsp;11) usan un generador de números pseudoaleatorios. Si no se fija su <em>semilla</em>, dos ejecuciones dan números distintos y, con ellos, cifras distintas. La API moderna de NumPy usa un objeto generador explícito:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">2026</span>)     <span class="co"># semilla fija -&gt; reproducible</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>muestra <span class="op">=</span> rng.normal(size<span class="op">=</span><span class="dv">1000</span>)       <span class="co"># los MISMOS 1000 valores en cada corrida</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="Avanzado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Avanzado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Fijar la semilla basta en la CPU, pero <strong>no siempre en la GPU</strong>: algunas operaciones (ciertas convoluciones) acumulan con sumas en coma flotante cuyo orden no es determinista entre ejecuciones, de modo que el resultado varía en los últimos dígitos aunque la semilla sea la misma. La disciplina, tomada de la política de datos del libro (cap.&nbsp;10): fuerza los algoritmos deterministas cuando existan, y <strong>verifica recorriendo</strong> —dos ejecuciones deben cuadrar antes de citar una cifra—. Y las medidas de tiempo de reloj se dan por su <em>cociente</em> u <em>orden de magnitud</em>, nunca por su valor absoluto, que depende de la máquina.</p>
+</div>
+</div>
+<p>Con esto cerramos el andamiaje. El resto del libro se apoya en él sin volver a justificarlo: cada cifra que aparezca en la prosa será <em>medida</em> por código reproducible, <em>sintética</em> declarada o <em>citada</em> con su fuente, y cada figura nacerá de un <em>script</em> determinista. El código completo de este capítulo está en <code>src/cap01_entorno.py</code>, que lee la identidad del entorno y comprueba el determinismo reejecutando una generación con semilla fija.</p>
+</section>
+<section id="documentación-y-comunicación-del-código" class="level2">
+<h2 class="anchored" data-anchor-id="documentación-y-comunicación-del-código">Documentación y comunicación del código</h2>
+<p>El código de datos se lee muchas más veces de las que se escribe, y buena parte de esas lecturas las hace su propio autor meses después, cuando ya ha olvidado el contexto. Documentar no es un lujo ni un trámite final: es parte de escribir código correcto, porque obliga a explicitar la intención. La idea rectora, heredera de la programación literaria de <span class="citation" data-cites="knuth1984literate">Knuth (<a href="#ref-knuth1984literate" role="doc-biblioref">1984</a>)</span>, es que un programa debe poder leerlo una persona, no solo ejecutarlo una máquina.</p>
+<section id="el-readme-como-puerta-de-entrada" class="level3">
+<h3 class="anchored" data-anchor-id="el-readme-como-puerta-de-entrada">El README como puerta de entrada</h3>
+<p>Todo proyecto necesita un <code>README.md</code> que responda, en pocas líneas, a tres preguntas: qué es, cómo se instala y cómo se ejecuta. Un buen <code>README</code> permite que una persona ajena reproduzca el análisis en diez minutos; su ausencia condena el proyecto al olvido en cuanto su autor se distrae. Se escribe en <strong>Markdown</strong>, un lenguaje de marcado ligero y legible que se renderiza a HTML en cualquier repositorio.</p>
+</section>
+<section id="docstrings-el-contrato-de-cada-función" class="level3">
+<h3 class="anchored" data-anchor-id="docstrings-el-contrato-de-cada-función">Docstrings: el contrato de cada función</h3>
+<p>Dentro del código, la documentación vive en los <em>docstrings</em>: cadenas al inicio de módulos, clases y funciones que describen qué hacen, qué reciben y qué devuelven. A diferencia de un comentario, el <em>docstring</em> es accesible en tiempo de ejecución (<code>help(funcion)</code>) y por las herramientas del editor:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> normalizar(valores: <span class="bu">list</span>[<span class="bu">float</span>]) <span class="op">-&gt;</span> <span class="bu">list</span>[<span class="bu">float</span>]:</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Escala 'valores' al rango [0, 1].</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">    Args:</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">        valores: secuencia no vacia de numeros.</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co">    Returns:</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co">        lista con los valores escalados; ceros si todos son iguales.</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    lo, hi <span class="op">=</span> <span class="bu">min</span>(valores), <span class="bu">max</span>(valores)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [<span class="fl">0.0</span> <span class="cf">for</span> _ <span class="kw">in</span> valores] <span class="cf">if</span> hi <span class="op">==</span> lo <span class="cf">else</span> [(v<span class="op">-</span>lo)<span class="op">/</span>(hi<span class="op">-</span>lo) <span class="cf">for</span> v <span class="kw">in</span> valores]</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Las anotaciones de tipo (<code>list[float]</code>, cap.&nbsp;3) completan la documentación de forma <em>ejecutable</em>: no pueden quedar desactualizadas sin que el verificador de tipos se queje, algo que a un comentario en prosa le pasa constantemente. Herramientas como Sphinx o MkDocs generan, a partir de estos <em>docstrings</em>, un sitio de documentación navegable sin escribirlo dos veces. El principio, otra vez, es «una fuente»: la documentación nace del código.</p>
+</section>
+</section>
+<section id="procedencia-licencias-y-caché-de-datos" class="level2">
+<h2 class="anchored" data-anchor-id="procedencia-licencias-y-caché-de-datos">Procedencia, licencias y caché de datos</h2>
+<p>La reproducibilidad del entorno y del código no basta si los datos no se pueden recuperar. Los principios FAIR <span class="citation" data-cites="wilkinson2016fair">(<a href="#ref-wilkinson2016fair" role="doc-biblioref"><span class="nocase">Wilkinson et&nbsp;al.</span> 2016</a>)</span> (§1.1.4) se concretan, en la práctica diaria, en tres disciplinas.</p>
+<section id="de-dónde-vienen-los-datos" class="level3">
+<h3 class="anchored" data-anchor-id="de-dónde-vienen-los-datos">De dónde vienen los datos</h3>
+<p>Todo conjunto de datos tiene un origen, y ese origen debe declararse. Se prefieren fuentes <em>canónicas</em> —el repositorio oficial de un organismo, el portal de datos abiertos de una administración, el material suplementario de un artículo— y se citan igual que se cita la bibliografía. Un análisis sobre datos de procedencia desconocida es indefendible: nadie puede verificarlo ni saber qué representan las cifras. Este libro usará como caso transversal un conjunto real —el <em>Spotify Tracks Dataset</em> <span class="citation" data-cites="spotifytracks">(<a href="#ref-spotifytracks" role="doc-biblioref"><span class="nocase">maharshipandya</span> 2022</a>)</span>, un catálogo de unas 114 000 pistas musicales con sus rasgos de audio, compilado por maharshipandya y publicado bajo licencia BSD en Hugging Face— precisamente para practicar esta disciplina de principio a fin.</p>
+</section>
+<section id="licencias-tener-el-dato-no-es-tener-el-derecho" class="level3">
+<h3 class="anchored" data-anchor-id="licencias-tener-el-dato-no-es-tener-el-derecho">Licencias: tener el dato no es tener el derecho</h3>
+<p>Que un dato esté disponible no significa que puedas usarlo o redistribuirlo. Cada conjunto tiene una <strong>licencia</strong> que define qué se permite: las licencias abiertas (Creative Commons, dominio público, licencias de datos abiertos) permiten el uso y la redistribución con distintas condiciones de atribución; otras lo restringen. Comprobar la licencia <em>antes</em> de construir sobre unos datos es parte de la responsabilidad profesional (cap.&nbsp;16), no un detalle legal menor.</p>
+</section>
+<section id="caché-idempotente-descargar-una-vez" class="level3">
+<h3 class="anchored" data-anchor-id="caché-idempotente-descargar-una-vez">Caché idempotente: descargar una vez</h3>
+<p>Los datos crudos se descargan <em>una</em> vez, se guardan y no se vuelven a pedir. Una descarga <strong>idempotente</strong> comprueba si el fichero ya existe antes de bajarlo, y con ello ahorra ancho de banda, respeta al servidor y hace el análisis reproducible aunque la fuente desaparezca:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> httpx</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> descargar(url: <span class="bu">str</span>, destino: Path) <span class="op">-&gt;</span> Path:</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Descarga 'url' a 'destino' solo si aun no existe (idempotente)."""</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> destino.exists():</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> destino                      <span class="co"># ya esta: no se vuelve a pedir</span></span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    destino.parent.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    destino.write_bytes(httpx.get(url, timeout<span class="op">=</span><span class="dv">30</span>).content)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> destino</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Guardar además la <em>fecha</em> de descarga permite citar la versión exacta de los datos, cerrando el círculo FAIR. La tabla&nbsp;1.5 resume, para no perder de vista el objetivo último, las tres clases de dato que toda cifra del libro respetará.</p>
+<table class="caption-top table">
+<caption><strong>Las tres clases de dato.</strong> Toda cifra pertenece a una de tres clases, con procedencia visible. Se desarrollan en el capítulo&nbsp;10.</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Clase</th>
+<th style="text-align: left;">Qué es</th>
+<th style="text-align: left;">Cómo se cita</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Medida</td>
+<td style="text-align: left;">la calculó tu código, reproducible</td>
+<td style="text-align: left;">registro único (<code>\res</code>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sintética</td>
+<td style="text-align: left;">generada a propósito para ilustrar</td>
+<td style="text-align: left;">marcada como tal</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Citada</td>
+<td style="text-align: left;">tomada de la literatura</td>
+<td style="text-align: left;"><code>\textcite</code>/<code>\parencite</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="medir-sin-engañarse-rendimiento-y-tiempos" class="level2">
+<h2 class="anchored" data-anchor-id="medir-sin-engañarse-rendimiento-y-tiempos">Medir sin engañarse: rendimiento y tiempos</h2>
+<p>Buena parte de la ciencia de datos es cuestión de velocidad, y medir el rendimiento es una habilidad con sus propias trampas. La forma correcta de medir un fragmento es con un cronómetro repetible —<code>timeit</code> o la función mágica <code>%timeit</code> de IPython <span class="citation" data-cites="perez2007ipython">(<a href="#ref-perez2007ipython" role="doc-biblioref">Pérez y Granger 2007</a>)</span>—, que ejecuta el código muchas veces y descarta el ruido:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> timeit</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> timeit.timeit(<span class="st">"sum(x*x for x in range(1000))"</span>, number<span class="op">=</span><span class="dv">10000</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"tiempo relativo: </span><span class="sc">{</span>t<span class="sc">:.4f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>La trampa, y la regla de oro del libro, es <strong>qué se comunica</strong>. Un tiempo absoluto («tarda 3,2 segundos») depende de la máquina, de la carga del sistema y de mil factores irrelevantes; no es reproducible ni comparable. Lo que se comunica es el <em>cociente</em> o el <em>orden de magnitud</em> («la versión vectorizada es unas 40 veces más rápida»), que sí es estable entre máquinas. Esta es una aplicación directa de la política de datos (cap.&nbsp;10): las medidas de reloj se dan por su forma, no por su valor absoluto. Y una advertencia clásica, atribuida a Donald Knuth, cierra el asunto: la optimización prematura es la raíz de muchos males; primero se mide dónde está el coste real y solo entonces se optimiza lo que importa.</p>
+<p>El instrumento para localizar ese coste es el <em>profiler</em> (perfilador), que mide cuánto tiempo pasa el programa en cada función y revela dónde está de verdad el cuello de botella —que casi nunca es donde la intuición cree—. <code>cProfile</code>, de la biblioteca estándar, produce ese desglose sin apenas esfuerzo, y se desarrolla en el capítulo&nbsp;16. La lección de método, válida desde el primer día, es que optimizar sin medir es disparar a ciegas: se dedica esfuerzo a acelerar una parte que apenas contaba, mientras el verdadero coste sigue intacto. Medir primero, y dar el resultado por su cociente y no por su valor absoluto, es la disciplina que separa una mejora real de una anécdota de velocidad.</p>
+</section>
+<section id="el-entorno-en-la-nube-y-la-automatización" class="level2">
+<h2 class="anchored" data-anchor-id="el-entorno-en-la-nube-y-la-automatización">El entorno en la nube y la automatización</h2>
+<p>El entorno de trabajo ya no vive solo en el portátil. Conviene conocer dos extensiones modernas que afectan a la reproducibilidad.</p>
+<section id="notebooks-y-entornos-en-la-nube" class="level3">
+<h3 class="anchored" data-anchor-id="notebooks-y-entornos-en-la-nube">Notebooks y entornos en la nube</h3>
+<p><em>Google Colab</em> ofrece Jupyter <span class="citation" data-cites="perkel2018jupyter">(<a href="#ref-perkel2018jupyter" role="doc-biblioref">Perkel 2018</a>)</span> en la nube, con GPU gratuita y sin instalar nada, y rebaja la barrera de entrada casi a cero; <em>GitHub Codespaces</em> y los <em>devcontainers</em> llevan un entorno de desarrollo completo al navegador, definido por un fichero versionado. Su comodidad tiene una contrapartida de reproducibilidad: estos entornos son <em>efímeros</em> y sus versiones de bibliotecas cambian sin aviso, de modo que un notebook que hoy corre en Colab puede romperse mañana. La defensa es la misma de siempre: fijar las versiones explícitamente (un <code>pip install pandas==2.2</code> al inicio, o un <code>uv.lock</code>) en lugar de confiar en las que la plataforma traiga ese día.</p>
+</section>
+<section id="integración-continua-automatizar-las-comprobaciones" class="level3">
+<h3 class="anchored" data-anchor-id="integración-continua-automatizar-las-comprobaciones">Integración continua: automatizar las comprobaciones</h3>
+<p>La <strong>integración continua</strong> (CI) ejecuta automáticamente, en cada cambio que se sube al repositorio, una batería de comprobaciones: que el código compila, que pasa las pruebas (cap.&nbsp;16), que respeta el estilo (<code>ruff</code>) y que el notebook se ejecuta limpio. Servicios como GitHub Actions lo hacen con un fichero de configuración versionado. Para un proyecto de datos serio, la CI es la red que garantiza que la reproducibilidad no se degrada con el tiempo: cada cambio se verifica sin depender de que alguien se acuerde de hacerlo a mano. Es, en el fondo, la misma idea de «verificar contra el artefacto» de la política de datos, automatizada.</p>
+</section>
+</section>
+<section id="configuración-secretos-y-determinismo-del-entorno" class="level2">
+<h2 class="anchored" data-anchor-id="configuración-secretos-y-determinismo-del-entorno">Configuración, secretos y determinismo del entorno</h2>
+<p>Dos detalles del entorno, menores en apariencia, arruinan silenciosamente muchos proyectos, y conviene resolverlos desde el principio.</p>
+<section id="configuración-fuera-del-código" class="level3">
+<h3 class="anchored" data-anchor-id="configuración-fuera-del-código">Configuración fuera del código</h3>
+<p>Un análisis tiene parámetros que cambian entre ejecuciones o entre máquinas: rutas, umbrales, claves de acceso a un servicio. <strong>Cablear</strong> (<em>hardcodear</em>) estos valores en el código es un error: obliga a editar el programa para cambiar un parámetro y, peor, invita a escribir contraseñas y claves de API directamente en un fichero que acabará en el repositorio público. La disciplina es separar la <em>configuración</em> del <em>código</em>: los parámetros van a un fichero de configuración o a <strong>variables de entorno</strong>, y los secretos <em>nunca</em> se versionan. Un fichero <code>.env</code> (excluido en el <code>.gitignore</code>) guarda las claves localmente, y el código las lee del entorno:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>clave <span class="op">=</span> os.environ[<span class="st">"API_KEY"</span>]        <span class="co"># se lee del entorno, no se escribe en el codigo</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>umbral <span class="op">=</span> <span class="bu">float</span>(os.environ.get(<span class="st">"UMBRAL"</span>, <span class="st">"0.5"</span>))   <span class="co"># con valor por defecto</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Filtrar una clave de API en un repositorio público es uno de los errores de seguridad más comunes y más caros; separar los secretos del código lo evita de raíz.</p>
+</section>
+<section id="determinismo-del-entorno-el-orden-y-el-hash" class="level3">
+<h3 class="anchored" data-anchor-id="determinismo-del-entorno-el-orden-y-el-hash">Determinismo del entorno: el orden y el <em>hash</em></h3>
+<div class="callout callout-style-default callout-note no-icon callout-titled" title="Avanzado">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon no-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Nota</span>Avanzado
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Además de la semilla del generador aleatorio (§1.10), hay dos fuentes de nodeterminismo sutiles. La primera: el orden de iteración de algunos conjuntos depende de una semilla de <em>hash</em> que Python aleatoriza entre ejecuciones por seguridad; si tu resultado depende del orden de recorrido de un <code>set</code>, fíjalo con la variable de entorno <code>PYTHONHASHSEED=0</code> o, mejor, no dependas de ese orden. La segunda: en la GPU, ciertas operaciones acumulan sumas en coma flotante en un orden no determinista, de modo que dos ejecuciones difieren en los últimos dígitos. La defensa es la misma que rige todo el capítulo: forzar los algoritmos deterministas cuando existan, <strong>verificar recorriendo</strong>, y dar las cifras sensibles al orden por su forma, no por su último decimal.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="errores-frecuentes-al-empezar" class="level2">
+<h2 class="anchored" data-anchor-id="errores-frecuentes-al-empezar">Errores frecuentes al empezar</h2>
+<p>Cerrar el capítulo con los tropiezos habituales ahorra al lector semanas de frustración, porque casi todo el mundo comete los mismos al principio. Reconocerlos es la mitad de la solución.</p>
+<ul>
+<li><p><strong>Instalar en el sistema en vez de en un entorno.</strong> Ejecutar <code>pip install</code> sin haber activado un entorno virtual ensucia el Python global y provoca conflictos entre proyectos. <em>Solución:</em> un entorno por proyecto (§1.4); con <code>uv</code>, <code>uv add</code> lo gestiona.</p></li>
+<li><p><strong>Instalar en el entorno equivocado.</strong> Un clásico: activar un entorno y que el <code>pip</code> que se ejecuta sea otro. <em>Solución:</em> comprobar con <code>which python</code> / <code>sys.executable</code> dónde se está instalando.</p></li>
+<li><p><strong>Versionar los datos y los artefactos.</strong> Subir al repositorio ficheros pesados de datos o salidas regenerables lo vuelve lento e inmanejable. <em>Solución:</em> un <code>.gitignore</code> desde el primer día (§1.7.1).</p></li>
+<li><p><strong>Editar los datos crudos.</strong> «Arreglar» un valor en el fichero original destruye el punto de partida. <em>Solución:</em> los crudos son inmutables; toda limpieza produce ficheros nuevos.</p></li>
+<li><p><strong>No fijar la semilla.</strong> Un resultado que cambia en cada ejecución no es defendible. <em>Solución:</em> <code>np.random.default_rng(semilla)</code> y verificar reejecutando (§1.10).</p></li>
+<li><p><strong>Fiarse del estado del notebook.</strong> Dar por bueno un resultado sin haber ejecutado el cuaderno limpio de arriba abajo. <em>Solución:</em> <code>nbconvert --execute</code> antes de creer una cifra.</p></li>
+<li><p><strong>Teclear números a mano en el informe.</strong> Copiar un resultado de la consola al texto rompe el vínculo con el código. <em>Solución:</em> que toda cifra salga del código (cap.&nbsp;10).</p></li>
+<li><p><strong>Cablear secretos en el código.</strong> Escribir una clave de API en un fichero que acaba en el repositorio. <em>Solución:</em> variables de entorno y <code>.env</code> excluido (§1.15.1).</p></li>
+</ul>
+<p>Ninguno de estos errores es grave por sí solo; lo grave es que, sumados y repetidos, convierten un análisis en algo que solo funciona «en mi máquina, hoy». La disciplina de este capítulo es, precisamente, la vacuna contra esa fragilidad.</p>
+</section>
+<section id="un-primer-flujo-completo-de-principio-a-fin" class="level2">
+<h2 class="anchored" data-anchor-id="un-primer-flujo-completo-de-principio-a-fin">Un primer flujo completo, de principio a fin</h2>
+<p>Cerramos el capítulo tejiendo todo lo anterior en un ejemplo mínimo pero completo, del tipo que este libro repetirá a mayor escala: crear el entorno, escribir un <em>script</em> determinista que produzca un artefacto, un segundo que lo consuma, y verificar que el resultado es reproducible. Los datos serán <em>sintéticos declarados</em> (clase&nbsp;2, §1.1.5): los generamos a propósito para ilustrar el flujo, no son una medición.</p>
+<p>La figura&nbsp;1.6 muestra la forma del flujo: un <em>script</em> produce un artefacto que otro consume, con la orquestación encadenando los pasos y la verificación cerrando el círculo.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="figs/cap01/fig_06.svg" class="img-fluid figure-img"></p>
+<figcaption><strong>Figura&nbsp;1.6.</strong> <strong>El flujo de dos scripts.</strong> Un <em>script</em> produce un artefacto reproducible (semilla fija) que otro consume; la verificación comprueba que dos ejecuciones dan el mismo artefacto. Es el patrón que el libro escala.</figcaption>
+</figure>
+</div>
+<section id="preparar-el-entorno" class="level3">
+<h3 class="anchored" data-anchor-id="preparar-el-entorno">Preparar el entorno</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" data-language="bash"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> init mini-flujo <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> mini-flujo</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> add numpy pandas          <span class="co"># dependencias declaradas en pyproject.toml + lock</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> datos/procesados scripts</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> init                     <span class="co"># el proyecto nace bajo control de versiones</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="generar-un-artefacto-de-forma-determinista" class="level3">
+<h3 class="anchored" data-anchor-id="generar-un-artefacto-de-forma-determinista">Generar un artefacto de forma determinista</h3>
+<p>El primer <em>script</em>, <code>scripts/generar.py</code>, produce una tabla sintética con <strong>semilla fija</strong>, de modo que dé siempre exactamente los mismos datos, y la guarda en <code>datos/procesados/</code>. Al terminar, muestra una pequeña muestra del artefacto —la disciplina de «inspeccionar lo que guardas»—.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""Genera una tabla sintetica de pistas (semilla fija -&gt; reproducible)."""</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>SALIDA <span class="op">=</span> Path(<span class="st">"datos/procesados/pistas_sinteticas.csv"</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> generar(n: <span class="bu">int</span> <span class="op">=</span> <span class="dv">500</span>, semilla: <span class="bu">int</span> <span class="op">=</span> <span class="dv">2026</span>) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(semilla)          <span class="co"># generador con semilla fija</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    genero <span class="op">=</span> rng.choice([<span class="st">"pop"</span>, <span class="st">"rock"</span>, <span class="st">"classical"</span>], size<span class="op">=</span>n)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>    base <span class="op">=</span> np.select([genero <span class="op">==</span> <span class="st">"pop"</span>, genero <span class="op">==</span> <span class="st">"rock"</span>],</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>                     [<span class="fl">0.72</span>, <span class="fl">0.85</span>], default<span class="op">=</span><span class="fl">0.30</span>)  <span class="co"># energia tipica por genero</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>    energy <span class="op">=</span> np.clip(base <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">0.08</span>, n), <span class="fl">0.0</span>, <span class="fl">1.0</span>)</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.DataFrame({<span class="st">"genero"</span>: genero,</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"energy"</span>: energy.<span class="bu">round</span>(<span class="dv">3</span>)})</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> generar()</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>    SALIDA.parent.mkdir(parents<span class="op">=</span><span class="va">True</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>    df.to_csv(SALIDA, index<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"guardado </span><span class="sc">{</span><span class="bu">len</span>(df)<span class="sc">}</span><span class="ss"> filas en </span><span class="sc">{</span>SALIDA<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(df.sample(<span class="dv">5</span>, random_state<span class="op">=</span><span class="dv">0</span>))           <span class="co"># inspeccion: 5 muestras</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="consumir-el-artefacto" class="level3">
+<h3 class="anchored" data-anchor-id="consumir-el-artefacto">Consumir el artefacto</h3>
+<p>El segundo <em>script</em>, <code>scripts/resumir.py</code>, no vuelve a generar los datos: los <em>lee</em> y calcula un resumen. Esta separación —un <em>script</em> que produce, otro que consume— es la que permite rehacer solo la parte necesaria cuando algo cambia, y es el germen de la orquestación (§1.9).</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24" data-language="Python"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""Lee el artefacto y calcula un resumen (no regenera los datos)."""</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>ENTRADA <span class="op">=</span> Path(<span class="st">"datos/procesados/pistas_sinteticas.csv"</span>)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> resumir(df: pd.DataFrame) <span class="op">-&gt;</span> pd.DataFrame:</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df.groupby(<span class="st">"genero"</span>)[<span class="st">"energy"</span>].agg([<span class="st">"mean"</span>, <span class="st">"median"</span>, <span class="st">"size"</span>])</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.read_csv(ENTRADA)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    resumen <span class="op">=</span> resumir(df).<span class="bu">round</span>(<span class="dv">1</span>)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(resumen)</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="orquestar-y-versionar" class="level3">
+<h3 class="anchored" data-anchor-id="orquestar-y-versionar">Orquestar y versionar</h3>
+<p>Un <code>Makefile</code> encadena los dos pasos en el orden correcto, de modo que reproducir el análisis completo sea un solo comando (<code>make</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25" data-language="make"><pre class="sourceCode makefile code-with-copy"><code class="sourceCode makefile"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="dv">todo:</span><span class="dt"> datos/procesados/pistas_sinteticas.csv</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="er">    </span>uv run python scripts/resumir.py</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="dv">datos/procesados/pistas_sinteticas.csv:</span><span class="dt"> scripts/generar.py</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="er">    </span>uv run python scripts/generar.py</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Con el flujo funcionando, se registra en Git —el código y la configuración, nunca los datos generados, que el <code>.gitignore</code> excluye porque son <em>reproducibles</em> a partir del código—:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb26" data-language="bash"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">echo</span> <span class="st">"datos/procesados/"</span> <span class="op">&gt;</span> .gitignore</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> add pyproject.toml uv.lock scripts/ Makefile .gitignore</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"flujo minimo: generar y resumir mediciones (determinista)"</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="verificar-la-reproducibilidad" class="level3">
+<h3 class="anchored" data-anchor-id="verificar-la-reproducibilidad">Verificar la reproducibilidad</h3>
+<p>El paso que cierra el círculo, y que casi nadie da: <strong>comprobar</strong> que el flujo es de verdad reproducible, no suponerlo. Ejecutamos dos veces y confirmamos que el artefacto es idéntico bit a bit:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27" data-language="bash"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/generar.py <span class="kw">&amp;&amp;</span> <span class="fu">md5sum</span> datos/procesados/pistas_sinteticas.csv</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python scripts/generar.py <span class="kw">&amp;&amp;</span> <span class="fu">md5sum</span> datos/procesados/pistas_sinteticas.csv</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># los dos md5 deben COINCIDIR: la semilla fija garantiza el mismo artefacto</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Si los dos <em>hashes</em> coinciden, la semilla cumple su función y el resultado es defendible; si no, hay una fuente de aleatoriedad sin fijar que habría contaminado cualquier cifra derivada. Esta comprobación —«verificar contra el artefacto, no contra el parte», en palabras de la política de datos del libro (cap.&nbsp;10)— es la que convierte la reproducibilidad de una intención en un hecho comprobado. Todo el libro se construye sobre este patrón: producir con código determinista, y verificar el producto.</p>
+</section>
+</section>
+<section id="lecturas-recomendadas" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="lecturas-recomendadas">Lecturas recomendadas</h2>
+<ul>
+<li><p><span class="citation" data-cites="turingway">The Turing Way Community (<a href="#ref-turingway" role="doc-biblioref">2022</a>)</span>: <em>The Turing Way</em>, el manual abierto de referencia sobre investigación reproducible, ética y colaborativa. Es el mejor punto de partida y se mantiene al día.</p></li>
+<li><p><span class="citation" data-cites="sandve2013ten">Sandve et&nbsp;al. (<a href="#ref-sandve2013ten" role="doc-biblioref">2013</a>)</span> y <span class="citation" data-cites="wilson2017good">Wilson et&nbsp;al. (<a href="#ref-wilson2017good" role="doc-biblioref">2017</a>)</span>: dos artículos breves y prácticos con reglas concretas que se pueden adoptar hoy mismo.</p></li>
+<li><p><span class="citation" data-cites="pimentel2019large">Pimentel et&nbsp;al. (<a href="#ref-pimentel2019large" role="doc-biblioref">2019</a>)</span>: la evidencia empírica de por qué publicar el código no basta; lectura recomendada antes de compartir un notebook.</p></li>
+<li><p><span class="citation" data-cites="uvdocs">Astral (<a href="#ref-uvdocs" role="doc-biblioref">2025b</a>)</span> y <span class="citation" data-cites="ruffdocs">Astral (<a href="#ref-ruffdocs" role="doc-biblioref">2025a</a>)</span>: la documentación viva del gestor y del <em>linter</em> que definen el flujo de 2026.</p></li>
+<li><p><span class="citation" data-cites="ramalho2022fluent">Ramalho (<a href="#ref-ramalho2022fluent" role="doc-biblioref">2022</a>)</span>: para profundizar en el lenguaje que empezamos a usar aquí; el modelo de objetos y el estilo idiomático.</p></li>
+<li><p>PEP 8 <span class="citation" data-cites="pep8">(<a href="#ref-pep8" role="doc-biblioref">Rossum et&nbsp;al. 2001</a>)</span> y PEP 20 <span class="citation" data-cites="pep20">(<a href="#ref-pep20" role="doc-biblioref">Peters 2004</a>)</span> (accesible con <code>import this</code>): el estilo y la filosofía del lenguaje, en pocas páginas.</p></li>
+</ul>
+
+
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">Referencias</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-ruffdocs" class="csl-entry" role="listitem">
+Astral. 2025a. <span>«Ruff: An extremely fast Python linter and code formatter»</span>. <a href="https://docs.astral.sh/ruff/">https://docs.astral.sh/ruff/</a>.
+</div>
+<div id="ref-uvdocs" class="csl-entry" role="listitem">
+Astral. 2025b. <span>«uv: An extremely fast Python package and project manager»</span>. <a href="https://docs.astral.sh/uv/">https://docs.astral.sh/uv/</a>.
+</div>
+<div id="ref-baker2016reproducibility" class="csl-entry" role="listitem">
+Baker, Monya. 2016. <span>«1,500 scientists lift the lid on reproducibility»</span>. <em>Nature</em> 533 (7604): 452-54. <a href="https://doi.org/10.1038/533452a">https://doi.org/10.1038/533452a</a>.
+</div>
+<div id="ref-blischak2016git" class="csl-entry" role="listitem">
+Blischak, John D., Emily R. Davenport, y Greg Wilson. 2016. <span>«A Quick Introduction to Version Control with <span>Git</span> and <span>GitHub</span>»</span>. <em>PLoS Computational Biology</em> 12 (1): e1004668. <a href="https://doi.org/10.1371/journal.pcbi.1004668">https://doi.org/10.1371/journal.pcbi.1004668</a>.
+</div>
+<div id="ref-boettiger2015docker" class="csl-entry" role="listitem">
+Boettiger, Carl. 2015. <span>«An introduction to <span>Docker</span> for reproducible research»</span>. <em>ACM SIGOPS Operating Systems Review</em> 49 (1): 71-79. <a href="https://doi.org/10.1145/2723872.2723882">https://doi.org/10.1145/2723872.2723882</a>.
+</div>
+<div id="ref-cookiecutterds" class="csl-entry" role="listitem">
+DrivenData. 2025. <span>«Cookiecutter Data Science: A logical, reasonably standardized project structure»</span>. <a href="https://cookiecutter-data-science.drivendata.org/">https://cookiecutter-data-science.drivendata.org/</a>.
+</div>
+<div id="ref-pep703" class="csl-entry" role="listitem">
+Gross, Sam. 2023. <span>«<span>PEP 703</span> – Making the Global Interpreter Lock Optional in <span>CPython</span>»</span>. <a href="https://peps.python.org/pep-0703/">https://peps.python.org/pep-0703/</a>.
+</div>
+<div id="ref-harris2020numpy" class="csl-entry" role="listitem">
+<span class="nocase">Harris, Charles R., K. Jarrod Millman, Stéfan J. van der Walt, et&nbsp;al.</span> 2020. <span>«Array programming with <span>NumPy</span>»</span>. <em>Nature</em> 585: 357-62. <a href="https://doi.org/10.1038/s41586-020-2649-2">https://doi.org/10.1038/s41586-020-2649-2</a>.
+</div>
+<div id="ref-pep621" class="csl-entry" role="listitem">
+<span class="nocase">Ingram, Brett et&nbsp;al.</span> 2020. <span>«<span>PEP 621</span> – Storing project metadata in pyproject.toml»</span>. <a href="https://peps.python.org/pep-0621/">https://peps.python.org/pep-0621/</a>.
+</div>
+<div id="ref-kluyver2016jupyter" class="csl-entry" role="listitem">
+<span class="nocase">Kluyver, Thomas, Benjamin Ragan-Kelley, Fernando Pérez, et&nbsp;al.</span> 2016. <span>«Jupyter Notebooks – a publishing format for reproducible computational workflows»</span>. <em>Positioning and Power in Academic Publishing: Players, Agents and Agendas</em>, 87-90. <a href="https://doi.org/10.3233/978-1-61499-649-1-87">https://doi.org/10.3233/978-1-61499-649-1-87</a>.
+</div>
+<div id="ref-knuth1984literate" class="csl-entry" role="listitem">
+Knuth, Donald E. 1984. <span>«Literate Programming»</span>. <em>The Computer Journal</em> 27 (2): 97-111. <a href="https://doi.org/10.1093/comjnl/27.2.97">https://doi.org/10.1093/comjnl/27.2.97</a>.
+</div>
+<div id="ref-spotifytracks" class="csl-entry" role="listitem">
+<span class="nocase">maharshipandya</span>. 2022. <span>«Spotify Tracks Dataset»</span>. <a href="https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset">https://huggingface.co/datasets/maharshipandya/spotify-tracks-dataset</a>.
+</div>
+<div id="ref-marimodocs" class="csl-entry" role="listitem">
+<span class="nocase">marimo</span>. 2025. <span>«marimo: an open-source reactive notebook for Python»</span>. <a href="https://docs.marimo.io/">https://docs.marimo.io/</a>.
+</div>
+<div id="ref-mckinney2022python" class="csl-entry" role="listitem">
+McKinney, Wes. 2022. <em>Python for Data Analysis</em>. 3.ª ed. O’Reilly Media.
+</div>
+<div id="ref-molder2021snakemake" class="csl-entry" role="listitem">
+<span class="nocase">Mölder, Felix, Kim Philipp Jablonski, Brice Letcher, et&nbsp;al.</span> 2021. <span>«Sustainable data analysis with <span>Snakemake</span>»</span>. <em>F1000Research</em> 10: 33. <a href="https://doi.org/10.12688/f1000research.29032.2">https://doi.org/10.12688/f1000research.29032.2</a>.
+</div>
+<div id="ref-oliphant2007python" class="csl-entry" role="listitem">
+Oliphant, Travis E. 2007. <span>«Python for Scientific Computing»</span>. <em>Computing in Science &amp; Engineering</em> 9 (3): 10-20. <a href="https://doi.org/10.1109/MCSE.2007.58">https://doi.org/10.1109/MCSE.2007.58</a>.
+</div>
+<div id="ref-peng2011reproducible" class="csl-entry" role="listitem">
+Peng, Roger D. 2011. <span>«Reproducible Research in Computational Science»</span>. <em>Science</em> 334 (6060): 1226-27. <a href="https://doi.org/10.1126/science.1213847">https://doi.org/10.1126/science.1213847</a>.
+</div>
+<div id="ref-perez2007ipython" class="csl-entry" role="listitem">
+Pérez, Fernando, y Brian E. Granger. 2007. <span>«<span>IPython</span>: A System for Interactive Scientific Computing»</span>. <em>Computing in Science &amp; Engineering</em> 9 (3): 21-29. <a href="https://doi.org/10.1109/MCSE.2007.53">https://doi.org/10.1109/MCSE.2007.53</a>.
+</div>
+<div id="ref-perkel2018jupyter" class="csl-entry" role="listitem">
+Perkel, Jeffrey M. 2018. <span>«Why Jupyter is data scientists’ computational notebook of choice»</span>. <em>Nature</em> 563 (7729): 145-46. <a href="https://doi.org/10.1038/d41586-018-07196-1">https://doi.org/10.1038/d41586-018-07196-1</a>.
+</div>
+<div id="ref-perkel2021reactive" class="csl-entry" role="listitem">
+Perkel, Jeffrey M. 2021. <span>«Reactive, reproducible, collaborative: computational notebooks evolve»</span>. <em>Nature</em> 593 (7857): 145-46. <a href="https://doi.org/10.1038/d41586-021-01174-w">https://doi.org/10.1038/d41586-021-01174-w</a>.
+</div>
+<div id="ref-pep20" class="csl-entry" role="listitem">
+Peters, Tim. 2004. <span>«<span>PEP 20</span> – The Zen of Python»</span>. <a href="https://peps.python.org/pep-0020/">https://peps.python.org/pep-0020/</a>.
+</div>
+<div id="ref-pimentel2019large" class="csl-entry" role="listitem">
+Pimentel, João Felipe, Leonardo Murta, Vanessa Braganholo, y Juliana Freire. 2019. <span>«A Large-Scale Study About Quality and Reproducibility of <span>Jupyter</span> Notebooks»</span>. <em>2019 IEEE/ACM 16th International Conference on Mining Software Repositories (MSR)</em>, 507-17. <a href="https://doi.org/10.1109/MSR.2019.00077">https://doi.org/10.1109/MSR.2019.00077</a>.
+</div>
+<div id="ref-quartodocs" class="csl-entry" role="listitem">
+Posit. 2025. <span>«Quarto: An open-source scientific and technical publishing system»</span>. <a href="https://quarto.org/">https://quarto.org/</a>.
+</div>
+<div id="ref-semver" class="csl-entry" role="listitem">
+Preston-Werner, Tom. 2013. <span>«Semantic Versioning 2.0.0»</span>. <a href="https://semver.org/">https://semver.org/</a>.
+</div>
+<div id="ref-ramalho2022fluent" class="csl-entry" role="listitem">
+Ramalho, Luciano. 2022. <em>Fluent Python</em>. 2.ª ed. O’Reilly Media.
+</div>
+<div id="ref-pep8" class="csl-entry" role="listitem">
+Rossum, Guido van, Barry Warsaw, y Nick Coghlan. 2001. <em><span>PEP 8</span> – Style Guide for <span>Python</span> Code</em>. <a href="https://peps.python.org/pep-0008/" class="uri">Https://peps.python.org/pep-0008/</a>.
+</div>
+<div id="ref-sandve2013ten" class="csl-entry" role="listitem">
+Sandve, Geir Kjetil, Anton Nekrutenko, James Taylor, y Eivind Hovig. 2013. <span>«Ten Simple Rules for Reproducible Computational Research»</span>. <em>PLoS Computational Biology</em> 9 (10): e1003285. <a href="https://doi.org/10.1371/journal.pcbi.1003285">https://doi.org/10.1371/journal.pcbi.1003285</a>.
+</div>
+<div id="ref-turingway" class="csl-entry" role="listitem">
+The Turing Way Community. 2022. <em>The Turing Way: A handbook for reproducible, ethical and collaborative research</em>. <a href="https://doi.org/10.5281/zenodo.3233853">https://doi.org/10.5281/zenodo.3233853</a>.
+</div>
+<div id="ref-wilkinson2016fair" class="csl-entry" role="listitem">
+<span class="nocase">Wilkinson, Mark D., Michel Dumontier, IJsbrand Jan Aalbersberg, et&nbsp;al.</span> 2016. <span>«The <span>FAIR</span> Guiding Principles for scientific data management and stewardship»</span>. <em>Scientific Data</em> 3: 160018. <a href="https://doi.org/10.1038/sdata.2016.18">https://doi.org/10.1038/sdata.2016.18</a>.
+</div>
+<div id="ref-wilson2017good" class="csl-entry" role="listitem">
+Wilson, Greg, Jennifer Bryan, Karen Cranston, Justin Kitzes, Lex Nederbragt, y Tracy K. Teal. 2017. <span>«Good enough practices in scientific computing»</span>. <em>PLoS Computational Biology</em> 13 (6): e1005510. <a href="https://doi.org/10.1371/journal.pcbi.1005510">https://doi.org/10.1371/journal.pcbi.1005510</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link" aria-label="Inicio">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Inicio</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./cap02.html" class="pagination-link" aria-label="Capítulo 2. El modelo de datos de Python: objetos, tipos y memoria">
+        <span class="nav-page-text">Capítulo 2. El modelo de datos de Python: objetos, tipos y memoria</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>© 2026 Manuel Muñoz Plá · Edición web bajo licencia <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.es">CC BY-NC-ND 4.0</a> (uso académico con atribución; sin uso comercial ni obras derivadas) · El código va aparte bajo licencia MIT</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>
