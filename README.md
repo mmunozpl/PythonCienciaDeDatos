@@ -2,10 +2,10 @@
 
 **Manuel Muñoz Plá**
 
-Manual de introducción a la **programación para la ciencia de datos**, del nivel
-principiante al universitario avanzado, actualizado al estado del arte de 2026
-(`uv`, `ruff`, `polars`, backend Arrow de pandas, scikit-learn moderno).
-El caso transversal es la **música** (Spotify Tracks Dataset). Dieciséis
+Manual de introducción a la **programación para la ciencia de datos**,
+actualizado al estado del arte de 2026 (`uv`, `ruff`, `polars`, backend
+Arrow de pandas, scikit-learn moderno). El caso transversal es la **música**
+(Spotify Tracks Dataset). Dieciséis
 capítulos en cinco partes: *Fundamentos del lenguaje*, *Estructuras de datos y
 diseño de programas*, *El stack numérico y tabular*, *Datos, estadística y
 visualización* y *Modelado, ingeniería y responsabilidad*.
