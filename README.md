@@ -26,7 +26,9 @@ PDF y EPUB), que se distribuye por separado.
 ├── src/                 # un módulo Python reproducible por capítulo
 ├── data/                # los datos que el código y las figuras consumen
 ├── binder/              # entorno reproducible para mybinder.org (ejecutar en la nube)
-└── requirements.txt
+├── pyproject.toml       # dependencias — `uv sync` para tu propio ordenador
+├── uv.lock              # versiones exactas (reproducibilidad bit a bit)
+└── requirements.txt     # el que usa Binder (mybinder.org lo pide así)
 ```
 
 ## Leer el libro
@@ -48,10 +50,20 @@ publican en la web: viven en la **obra completa** (papel, PDF y EPUB).
 Cada capítulo trae un módulo reproducible en `src/capNN_*.py`, determinista con
 semilla fija: al ejecutarlo regenera las cifras y figuras sobre las que se apoya.
 
+Con [`uv`](https://docs.astral.sh/uv/) —la herramienta que enseña el propio
+libro (cap. 1 y 15) para entornos reproducibles—:
+
 ```bash
-python3 -m venv .venv && source .venv/bin/activate   # o conda
+uv sync                           # entorno exacto de uv.lock, sin activar nada
+uv run python src/cap07_numpy.py  # p. ej. cómputo vectorizado con NumPy
+```
+
+Sin `uv`, con `pip` de toda la vida:
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-python3 src/cap07_numpy.py        # p. ej. cómputo vectorizado con NumPy
+python3 src/cap07_numpy.py
 ```
 
 Además, cada capítulo de la web trae un botón **«Ejecutar este capítulo en

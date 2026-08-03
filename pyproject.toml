@@ -1,0 +1,39 @@
+[project]
+name = "programacion-ciencia-datos"
+version = "2026.0.0"
+description = "Código reproducible del libro «Python para la Ciencia de Datos» (ed. 2026)"
+# recomendado 3.12+; verificado sobre 3.11.14 (ver requirements-lock.txt)
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=2.0",
+    "pandas>=2.2",
+    "polars>=1.0",
+    "pyarrow>=16.0",
+    "scikit-learn>=1.5",
+    "matplotlib>=3.9",
+    "seaborn>=0.13",
+    "scipy>=1.13",
+    "pandera>=0.20",
+    "duckdb>=1.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "pytest>=8.0",
+    "hypothesis>=6.0",
+    "jupyterlab>=4.0",
+    "marimo>=0.8",
+]
+
+[tool.ruff]
+line-length = 80
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
