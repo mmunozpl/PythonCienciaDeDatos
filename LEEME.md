@@ -4,6 +4,8 @@
 
 **Manuel Muñoz Plá**
 
+[![Cite](https://img.shields.io/badge/Cite-BibTeX-009e73)](#cómo-citar)
+
 Manual de introducción a la **programación para la ciencia de datos**,
 actualizado al estado del arte de 2026 (`uv`, `ruff`, `polars`, backend
 Arrow de pandas, scikit-learn moderno). El caso transversal es la **música**
@@ -23,8 +25,6 @@ PDF y EPUB), que se distribuye por separado.
 
 ```
 .
-├── docs/                # edición web (Quarto): un HTML por capítulo, figuras SVG,
-│                        #   buscador y matemáticas
 ├── src/                 # un módulo Python reproducible por capítulo
 ├── data/                # los datos que el código y las figuras consumen
 ├── binder/              # entorno reproducible para mybinder.org (ejecutar en la nube)
@@ -33,16 +33,20 @@ PDF y EPUB), que se distribuye por separado.
 └── requirements.txt     # el que usa Binder (mybinder.org lo pide así)
 ```
 
+La edición web no vive aquí: se lee en manpla.net, enlazada más abajo.
+
 ## Leer el libro
 
-La edición web (16 capítulos, con buscador, matemáticas y bibliografía por
-página) se publica con GitHub Pages desde `docs/`:
+La edición web —16 capítulos, con buscador, matemáticas y bibliografía por
+página— se publica en el sitio del autor:
 
-> https://mmunozpl.github.io/PythonCienciaDeDatos/
+> https://manpla.net/libros/python-ciencia-datos/
 
-Cada capítulo se compone con **figuras vectoriales SVG renderizadas con el mismo
-pdfLaTeX del libro**, de modo que las referencias y los números de figura, tabla
-y listado son los del texto impreso.
+Cada capítulo es una página de manpla.net, con su propia navegación, y se
+compone con **figuras vectoriales SVG renderizadas con el mismo pdfLaTeX del
+libro**, de modo que las referencias y los números de figura, tabla y listado
+son los del texto impreso. Este repositorio guarda el código y los datos que
+la respaldan.
 
 Los amplios ejercicios de cada capítulo, sus soluciones y los apéndices no se
 publican en la web: viven en la **obra completa** (papel, PDF y EPUB).
@@ -79,7 +83,7 @@ listos, sin instalar nada.
 | Parte | Qué es | Licencia |
 |---|---|---|
 | `src/`, `data/`, `binder/` | Código reproducible, datos e infraestructura | [MIT](src/LICENSE) — uso libre |
-| `docs/` | Texto del libro (edición web) | [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.es) — leer y compartir con atribución; sin uso comercial ni obras derivadas |
+| Texto del libro (edición web en manpla.net) | La obra | [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/deed.es) — leer y compartir con atribución; sin uso comercial ni obras derivadas |
 
 La **obra completa** —con los ejercicios de cada capítulo, sus soluciones y los
 apéndices— se publica en papel, PDF y EPUB con todos los derechos reservados.
@@ -103,7 +107,7 @@ Si mencionas o usas esta obra, cítala así (GitHub también ofrece el botón
   title     = {Python para la Ciencia de Datos},
   year      = {2026},
   publisher = {qWORD.dev},
-  url       = {https://mmunozpl.github.io/PythonCienciaDeDatos/}
+  url       = {https://manpla.net/libros/python-ciencia-datos/}
 }
 ```
 
